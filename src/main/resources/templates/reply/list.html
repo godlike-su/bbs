@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>我的论坛</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+				
+		<script th:src="@{/js/jquery.min.js}" src="../../js/jquery.min.js"></script>
+		<script th:src="@{/js/afquery.js}" src="../../js/afquery.js"></script>
+		<link href="../../css/common.css" rel="stylesheet" th:href="@{/css/common.css}" />
+		<link href="../../css/reply.css" rel="stylesheet" th:href="@{/css/reply.css}" />
+		
+		<style>
+			/* 管理操作 */
+			.manage{
+				display: none;
+				padding: 3px;
+				margin: 3px;
+				text-align: right;
+			}
+			.manage button{
+				font-size: 12px;
+				padding: 3px 6px;
+				background-color: #c0d3fb;
+				border-color: #c0d3fb;
+				margin-left: 10px;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="main container" style="min-height: 300px;">
+			
+			<!--头部-->
+			<div th:replace="~{common::header}"></div>
+			
+			<div class="pad" style="padding: 10px;border-bottom: 1px solid #f4f4f4;">
+				<a href="" th:href="@{/message/list}">
+					<img th:src='@{/img/back.png}' style='width:16px;transform:translateY(4px)'> 返回版面
+				</a>
+			</div>
+			
+			<!--原文-->
+			<div class="ref">
+				<div class="msginfo">
+						<img class="vcenter usericon" th:if="${ref.thumb==null}" th:src='@{/img/user.jpg}' style='width:36px;left:10px;' alt="头像" />
+						<img class="vcenter usericon" th:if="${ref.thumb!=null}" th:src='@{${ref.thumb}}' style='width:36px;left:10px;' alt="头像" />
+					<!--用户名 && 等级-->
+					<span class='author' th:if="${ref.vipName!=null && ref.vipName!='非会员' && ref.vip>0}" style="color: red;">[[${ref.userName}]]</span>
+					<span class='author' th:if="${ref.vipName==null || ref.vipName=='非会员' || ref.vip<=0}" style="color: black;">[[${ref.userName}]]</span>
+					<span th:if="${ref.level > 0}" style="background-color: yellow; color: red; min-width: 50px; text-align: center; border-radius: 10px; font-size: 15px">LV[[${ref.level}]]</span>
+					<span th:if="${ref.level <= 0 || ref.level==null}" style="background-color: gray; color: black; min-width: 50px; text-align: center; border-radius: 10px; font-size: 15px">LV[[${ref.level}]]</span>
+
+					<br />
+					<!--会员-->
+					<span th:if="${ref.vipName!=null && ref.vipName!='非会员' && ref.vip>0}" class="vip" style="background-color: red;
+						padding: 1px; color: yellow; min-width:50px; padding: 5px; font-weight: bold; border-radius: 10px;">[[${ref.vipName}]]</span>
+					<span th:if="${ref.vipName==null || ref.vipName=='非会员' || ref.vip<=0}" class="vip" style="background-color: white; padding: 1px; color: gray">非会员</span>
+					<br>
+					<span style="color: #888;">楼主</span>&nbsp;&nbsp;
+					<span style="color: #888;">[[${#strings.substring(ref.timeCreate,0,16)}]]</span>
+				</div>
+				<pre th:text='${ref.content}' style='padding-left:60px'>content</pre>
+			</div>
+			
+			<!-- 附件图片显示 -->	
+			<div style='padding:10px 20px;text-align: center;'>
+				<a th:if="${ref.img1.length()>0}" th:href='@{${ref.img1}}' target='_blank'>
+					<img class='attachment' th:src='@{${ref.img1}}' />
+				</a><br />
+				<a th:if="${ref.img2.length()>0}" th:href='@{${ref.img2}}' target='_blank'>
+					<img class='attachment' th:src='@{${ref.img2}}' />
+				</a><br />
+				<a th:if="${ref.img3.length()>0}" th:href='@{${ref.img3}}' target='_blank'>
+					<img class='attachment' th:src='@{${ref.img3}}' />
+				</a><br />
+			</div>
+			
+			<div style='text-align: left; font-size:13px;color:#555'>
+				<!--<span style="margin: 10px;">本页共[[${#lists.size(messageList)}]]条回复</span>-->
+				<span style="margin: 10px;">共[[${count}]]条回复</span>
+
+				<!-- 用户操作 -->
+				<div class="useractions" style="display: inline-block;"
+					th:rowid = '${ref.id}' th:if='${session.user!=null && session.user.id==ref.creator }' >
+					<a href='javascript:void(0)' onclick="my.userSetFlags(this, 'del', 'back')"	>删帖</a>
+				</div>
+				
+				<!-- 检查数据库里的 isAdmin，别有null值 -->	
+				<a th:if='${session.user!=null && session.user.isAdmin!=null && session.user.isAdmin}'
+						style="margin: 0 10px;" href="javascript:void(0)" onclick="$('.manage').show()">管理</a>
+			</div>
+			
+			<!-- 帖子管理操作 -->
+			<div th:if='${session.user!=null && session.user.isAdmin!=null && session.user.isAdmin}'
+						class="manage" th:rowid="${ref.id}">
+				<button onclick="my.suSetFlags(this, 'top', 'reload')"> 置顶 </button>
+				<button onclick="my.suSetFlags(this, 'nice', 'reload')"> 加精 </button>
+				<button onclick="my.suSetFlags(this, 'cantop', 'reload')"> 取消置顶 </button>
+				<button onclick="my.suSetFlags(this, 'cannice', 'reload')"> 取消加精 </button>
+				<button onclick="my.suSetFlags(this, 'del', 'back')"> 删除 </button>
+			</div>
+			
+			<!--回复原帖功能-->
+			<div class="container" style="padding: 12px;">
+				<div th:if="${session.user==null}">
+					请先 <a href="javascript:void(0)" onclick='pleaseLogin()'>登录</a> 之后才能回复
+				</div>
+				<div th:if="${session.user!=null}">
+					<a th:if="${session.userAbility.replyCount!=0}"
+					   class="primary" th:href="@{/u/reply/add(msgId=${ref.id},msgId2=0)}">回复</a>
+					<a th:if="${session.userAbility.replyCount==0}"
+					   class="primary" href="javaScript:void(0)" style="cursor:not-allowed;background-color: gray"
+					   title="今天回复数已上限">回复</a>
+				</div>
+				<script>
+					window.pleaseLogin = function(){
+						location.href = '[[@{/login}]]' + '?returnUrl=' + location.href;
+					}
+				</script>
+			</div>
+			<br /><br />
+		</div>
+		
+		<!-- 回复列表 循环 -->
+		<div class="container">
+			<!-- PC上以表格显示 -->
+			<table class="reply">
+				<tr class="item" th:each="row, state:${messageList}">
+					<!--个人信息-->
+					<td class="c1" style="vertical-align: top;padding: 6px;">
+						<img class="usericon" th:if="${row.thumb==null}" th:src='@{/img/user.jpg}'/>
+						<img class="usericon" th:if="${row.thumb!=null}" th:src='@{${row.thumb}}'/>
+						<br />
+						<!--帖子作者-->
+						<span class='author' th:if="${row.vipName!=null && row.vipName!='非会员' && row.vip>0}" style="color: red;">[[${row.userName}]]</span>
+						<span class='author' th:if="${row.vipName==null || row.vipName=='非会员' || row.vip<=0}" style="color: black;">[[${row.userName}]]</span>
+						<br />
+						<!--作者等级-->
+						<span th:if="${row.level > 0}" style="background-color: yellow; color: red; min-width: 50px; text-align: center; border-radius: 10px; font-size: 15px">LV[[${row.level}]]</span>
+						<span th:if="${row.level <= 0 || row.level==null}" style="background-color: gray; color: black; min-width: 50px; text-align: center; border-radius: 10px; font-size: 15px">LV[[${row.level}]]</span>
+						<br>
+						<span th:if="${row.vipName!=null && row.vipName!='非会员' && row.vip>0}" class="vip" style="background-color: red; padding: 1px; color: yellow; font-weight: bold; min-width: 50px; border-radius: 10px;">[[${row.vipName}]]</span>
+						<span th:if="${row.vipName==null || row.vipName=='非会员' || row.vip<=0}" class="vip" style="background-color: white; padding: 1px; color: gray">非会员</span>
+					</td>
+					<td class="c2">
+						<pre th:text="${row.content}">回复内容</pre>
+						<div th:if="${row.ref2!=0}">
+							<!--回复的回复-->
+							<pre style="color: #BEBEBE" >//回复 <span style="color: blue;">@[[${row.refstr}]]</span>：[[${row.replyText}]]</pre>
+						</div>
+						<div style="text-align: right;padding: 6px;">
+							<div th:if="${session.user!=null}">
+								<a class="primary" th:if="${session.userAbility.replyCount!=0}" th:href="@{/u/reply/add(msgId=${ref.id},msgId2=${row.id})}">回复</a>
+								<a class="primary" th:if="${session.userAbility.replyCount==0}" href="javaScript:void(0)"  style="cursor:not-allowed;background-color: gray;" title="今天回复数已上限">回复</a>
+							</div>
+							<!-- 帖子管理操作 -->
+							<div style="display: inline-block;text-align: left;" class="useractions"
+									th:if='${session.user!=null && session.user.isAdmin!=null && session.user.isAdmin}'
+								  	th:rowid="${row.id}">
+								<a href='javascript:void(0)' onclick="my.suSetFlags(this, 'del', 'reload')"> 删除 </a>
+							</div>
+							<div class="useractions" style="display: inline-block;text-align: left;"
+								th:rowid = '${row.id}' th:if='${session.user!=null && session.user.id==row.creator && session.user.isAdmin==null }' >
+								<a href='javascript:void(0)' onclick="my.userSetFlags(this, 'delref', 'reload')"	>删回复</a>
+							</div>
+							<span style="color: #666;">第[[${count-((pageNumber-1)*10)-state.index}]]楼</span>&nbsp;&nbsp;
+							<span style="color: #666;">[[${#strings.substring(row.timeCreate,0,16)}]]</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<div class='bottombar'>
+				<div class='page-index-bar' style='margin:0px' ></div>
+			</div>
+		</div>
+		
+		<div th:insert="~{common::footer}"></div>
+	</body>
+	
+	<script>
+		var my = {};
+		my.msgId = [[${ref.id}]] ;
+		// my.msgId2 = [[${msgId2}]];
+			
+		var pageCount = [[${pageCount}]];
+		var pageNumber = [[${pageNumber}]];
+		var count = [[${count}]];
+		var serviceUri = '[[@{/reply/list}]]' ; // 当前查询的URI
+
+        //输入当前页，返回url路径
+        my.pageUrl = function(pageNumber){
+            var url = serviceUri;
+            url += '?msgId=' + my.msgId + '&pageNumber=' + pageNumber;
+
+            // http://127.0.0.1:8080/book/list?pageNumber=1&filter=%E6%A0%A1%E8%8A%B1&niceFlag=0
+            return url;
+        }
+
+		// 初始化执行: 分页显示
+		my.initPage = function(){
+			var str = "";			
+		
+			var skipped = false;
+			for(var i=1; i<=pageCount; i++)
+			{
+				// 如果页面数过多，则添加一个省略号
+				if(i< pageNumber - 2 && i >= 2)
+				{
+					if(!skipped ) str += "...";
+					skipped = true;
+					continue;
+				}
+				if(i> pageNumber + 2 && i <= pageCount - 1)
+				{
+					if(!skipped ) str += "...";
+					skipped = true;
+					continue;
+				}
+				skipped = false;
+				
+				// 当前页码： 以高亮显示
+                if(i == pageNumber)
+                    str += "<label class='page static'> ##1 </label>".replace(/##1/g, i);
+                else
+                    str += "<a class='page' href='##2'> ##1 </a>"
+                        .replace(/##1/g, i)
+                        .replace(/##2/g, my.pageUrl(i));
+		
+				$('.page-index-bar').html(str);	
+			}
+		}(); // 立即执行 my.initPage()
+
+
+		// 用户操作: 删除自己的帖子
+		my.userSetFlags = function(dom, cmd, action){
+			var promptText = $(dom).text();
+			if(!confirm('确认操作：' + promptText + '?')) return;
+			
+			var rowid = Number( $(dom).parent().attr('rowid') );
+			var req = {};
+			req.msgId = rowid;
+			req.cmd = cmd;
+			Af.rest('[[@{/u/message/userSetFlags.do}]]', req, function(data){		
+				if(action=='back') location.href='[[@{/message/list}]]' ;  // 仅仅返回还不够,还得刷新一下
+				if(action=='reload')	location.reload();
+			})
+		}
+		
+		// 用户操作: 删除自己的回复
+		my.repSetFlags = function(dom, cmd, action){
+			var promptText = $(dom).text();
+			if(!confirm('确认操作：' + promptText + '?')) return;
+			
+			var rowid = Number( $(dom).parent().attr('rowid') );
+			var req = {};
+			req.msgId = rowid;
+			req.cmd = cmd;
+			Af.rest('[[@{/u/message/repSetFlags.do}]]', req, function(data){		
+				if(action=='back') location.href='[[@{/message/list}]]' ;  // 仅仅返回还不够,还得刷新一下
+				if(action=='reload')	location.reload();
+			})
+		}
+		
+		// 管理操作: 修改帖子
+		my.suSetFlags = function(dom, cmd, action){
+			var promptText = $(dom).text();
+			if(!confirm('确认操作：' + promptText + '?')) return;
+			
+			var rowid = Number( $(dom).parent().attr('rowid') );
+			var req = {};
+			req.msgId = rowid;
+			req.cmd = cmd;
+			Af.rest('[[@{/u/message/suSetFlags.do}]]', req, function(data){		
+				if(action=='back') location.href='[[@{/message/list}]]' ;  // 仅仅返回还不够,还得刷新一下
+				if(action=='reload')	location.reload();
+			})
+		}
+		
+	
+	</script>
+</html>

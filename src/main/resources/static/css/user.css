@@ -1,0 +1,62 @@
+.main{
+	width: 500px;
+	padding : 10px;
+	
+	margin: 40px auto auto auto;
+	background-color: #fcfcfc;
+	border-radius: 10px;
+}
+
+.head{
+	position: relative;
+	padding: 2px 2px ;
+	border-bottom: 1px solid #f1f1f1;
+	background-color: #fcfcfc;				
+	text-align: center;
+	height: 50px;
+	line-height: 46px;				
+}			
+.head .icon{
+	font-family: '黑体';
+	width:20px;
+	vertical-align: middle;
+}
+
+.form{
+	width: 100%;
+	margin: 40px auto;
+}
+.label{
+	display: inline-block;
+	width: 100px;
+	text-align: right;
+}
+input{
+	width: 300px;
+}
+input.state{
+	width: 250px;
+}
+
+
+/* 响应式布局 */
+@media screen and ( max-width: 1400px ) {
+	
+}
+
+@media screen and ( max-width: 1080px ) {
+	.main{
+		width: 350px;
+		padding : 10px;
+		
+		margin: 40px auto auto auto;
+		background-color: #fcfcfc;
+		border-radius: 10px;
+	}
+	input{
+		width: 200px;
+	}
+	input.state{
+		width: 150px;
+	}
+}

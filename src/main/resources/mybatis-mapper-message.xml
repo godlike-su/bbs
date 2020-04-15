@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+ <mapper namespace="message">
+    <!--插入帖子数据-->
+     <insert id="insertMes" parameterType="my.app.db.Message" >
+         INSERT INTO `message`
+        (`id`, `creator`, `title`, `content`, `cat1`, `cat2`, `cat3`, `ref1`, `ref2`, `refId`, `refstr`, `timeCreate`, `timeUpdate`, `niceFlag`, `topFlag`, `banFlag`, `delFlag`, `closeFlag`, `numReply`, `numLike`, `storePath`, `imgCount`, `img1`, `img2`, `img3`, `replyUser`, `replyName`, `replyTime`, `replyText`)
+  VALUES(#{id}, #{creator}, #{title}, #{content}, #{cat1}, #{cat2}, #{cat3}, #{ref1}, #{ref2}, #{refId}, #{refstr}, #{timeCreate}, #{timeUpdate}, #{niceFlag}, #{topFlag}, #{banFlag}, #{delFlag}, #{closeFlag}, #{numReply}, #{numLike}, #{storePath}, #{imgCount}, #{img1}, #{img2}, #{img3}, #{replyUser}, #{replyName}, #{replyTime}, #{replyText})
+
+     </insert>
+
+    <!--查询可阅读帖子的数目-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM message WHERE 1=1
+        <if test="ref1 != null and delFlag != null">
+            AND ref1 = #{ref1} AND delFlag = #{delFlag}
+        </if>
+        <if test="filter!=null">
+            AND title like "%"#{filter}"%"
+        </if>
+        <if test="niceFlag!=null">
+            AND niceFlag=#{niceFlag}
+        </if>
+    </select>
+
+    <!--查看所有可查看帖子或指定创建者帖子-->
+    <select id="selectList" resultType="hashmap">
+        select a.* ,b.name as userName,b.vipName,b.vip,b.level
+				  from message a JOIN user b
+				  ON a.creator = b.id
+                <if test="msgId != null">
+                    AND a.id = #{msgId}
+                </if>
+                <if test="ref1 != null and delFlag != null">
+                    AND ref1 = #{ref1} AND delFlag = #{delFlag}
+                </if>
+                <if test="creator != null">
+                    AND creator=#{creator}
+                </if>
+                <if test="filter!=null">
+                    AND title like "%"#{filter}"%"
+                </if>
+                <if test="niceFlag!=0">
+                    AND niceFlag=#{niceFlag}
+                </if>
+				 ORDER BY topFlag DESC, numLike DESC, replyTime DESC
+				 <if test="startIndex != null and pageSize != null">
+                     LIMIT #{startIndex}, #{pageSize}
+                 </if>
+    </select>
+
+    <!--查看reply帖子-->
+    <select id="replyList" resultType="hashmap">
+        select a.* ,b.name as userName,b.thumb,b.vipName,b.vip,b.level
+        from message a JOIN user b
+        ON a.creator = b.id
+        <if test="msgId != null">
+            AND a.id = #{msgId}
+        </if>
+        <if test="ref1 != null and delFlag != null">
+            AND ref1 = #{ref1} AND delFlag = #{delFlag}
+        </if>
+        order by id desc
+        <if test="startIndex != null and pageSize != null">
+            LIMIT #{startIndex}, #{pageSize}
+        </if>
+    </select>
+
+    <!--查看原帖，根据帖子id查询一条帖子-->
+    <select id="selecctOne" resultType="my.app.db.Message">
+        SELECT * FROM message WHERE 1=1
+        <if test="msgId != null">
+            AND id = #{msgId}
+        </if>
+    </select>
+    
+    <!--更新统计数据,根据id更新 msgId为帖子id
+        tmp为更改帖子的用户名，回复名时用到-->
+    <update id="updateOne" parameterType="hashmap">
+        UPDATE message
+        <trim prefix="set" suffixOverrides=",">
+            <if test="msgId != null">
+                numReply=numReply+1,
+            </if>
+            <if test="replyUser != null">
+                replyUser = #{replyUser},
+            </if>
+            <if test="replyText != null">
+                replyText = #{replyText},
+            </if>
+            <if test="replyName != null">
+                replyName = #{replyName},
+            </if>
+            <if test="replyTime != null">
+                replyTime = #{replyTime},
+            </if>
+            <if test="refstr != null">
+                refstr = #{refstr},
+            </if>
+        </trim>
+        where 1=1
+        <if test="msgId != null">
+            AND id = #{msgId}
+        </if>
+        <if test="replyName != null and tmp != null">
+            AND replyName = #{tmp}
+        </if>
+        <if test="refstr != null and tmp != null">
+            AND refstr = #{tmp}
+        </if>
+    </update>
+
+    <!--用户删除自己的帖子-->
+    <select id="selDetUs" resultType="my.app.db.Message">
+        select id,creator from message where id=#{msgId}
+    </select>
+
+    <update id="UpDel" parameterType="hashmap">
+        update message set delFlag=1 WHERE 1=1 AND id=#{msgId} OR ref1=#{msgId} OR ref2=#{msgId}
+    </update>
+    <!--管理操作帖子-->
+    <update id="suSetFlags" parameterType="hashmap">
+        UPDATE message SET
+        <if test="topFlag!=null">
+            topFlag = #{topFlag}
+        </if>
+        <if test="niceFlag!=null">
+            niceFlag = #{niceFlag}
+        </if>
+        <if test="delFlag!=null">
+            delFlag = #{delFlag}
+        </if>
+        where id=#{msgId}
+    </update>
+
+
+    <!--定时删除任务-->
+    <select id="selDeltask" resultType="my.app.db.Message">
+        select id, ref1, storePath from message where delFlag=1 LIMIT 5000
+    </select>
+
+    <delete id="delref" parameterType="hashmap">
+        DELETE  FROM message WHERE id=#{id}
+    </delete>
+
+    <!--管理员更改userName修改Message-->
+    <update id="setUser" parameterType="hashmap">
+        UPDATE message
+        <trim prefix="set" suffixOverrides=",">
+            <if test="replyName != null">
+                replyName = #{replyName},
+            </if>
+            <if test="refstr != null">
+                refstr = #{refstr},
+            </if>
+        </trim>
+        where 1=1
+        <if test="replyName!=null and tmp!=null and replyUser!=null">
+            AND `replyName`=#{tmp} AND `replyUser`=#{replyUser}
+        </if>
+        <if test="refstr!=null and tmp!=null and refId!=null">
+            AND `refstr`=#{tmp} AND `refId`=#{refId}
+        </if>
+
+    </update>
+
+ </mapper>

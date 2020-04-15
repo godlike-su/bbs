@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>发帖</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		
+		<script src="../../js/jquery.min.js" th:src="@{/js/jquery.min.js}" ></script>
+		<script src="../../js/afquery.js" th:src="@{/js/afquery.js}" ></script>
+		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
+		<link rel="stylesheet" href="../../css/common.css" th:href="@{/css/common.css}" />
+		
+		<script></script>
+		<style>
+			body{
+				background-color: #F6F7FB;
+			}
+			
+			/* 编辑区 */
+			.edit{
+				border:1px solid #ccc;
+			}
+			.edit .title{
+				box-sizing: border-box;
+				width:100%;
+				border-radius: 0px;
+				border: 0px solid #fff;
+				border-bottom: 1px dotted #ccc;
+				padding:10px 6px;
+				font-size:13px;
+				color: #333;
+			}
+			.edit .content{
+				border-radius: 0px;
+				box-sizing: border-box;
+				border: 0px solid #fff;
+				width:100%;
+				height: 200px;
+				padding:6px;
+				font-size:13px;
+				color: #333;
+				line-height: 150%;
+				tab-size: 3;
+			}
+					
+			.edit:hover{
+				border-color: #4285F4;
+			}
+			
+			/* 附件图片 */
+			.thumbbox{
+				display: inline-block;
+				margin: 10px 10px 10px 0px;
+				position: relative;
+				border: 1px dotted #ccc;
+				border-radius: 4px;
+				width: 120px;
+				height: 80px;
+				background-color: #fcfcfc;
+			}
+			.thumbbox .thumb{
+				position: absolute;
+				left: 50%;
+				top: 50%;
+				max-width: 90%;
+				max-height: 90%;
+				transform:translateX(-50%) translateY(-50%);
+				cursor:pointer;
+			}
+			.thumbbox .delete{
+				position: absolute;
+				right: 1px;
+				top: 1px;
+				background-color: #f1f1e3;
+			}
+			.thumbbox .num{
+				position: absolute;
+				left: 1px;
+				top: 1px;
+				color:#444;
+			}
+			.thumbbox .delete:hover{
+				background-color: #e1e1e8;
+			}
+			
+		</style>
+	</head>
+	<body>
+
+		<div class='container'>
+			
+			<!--头部-->
+			<div th:replace="~{common::header}"></div>
+			
+			<div class='pad' style='padding:10px;border-bottom:1px solid #f4f4f4'>
+				<a th:href='@{/message/list}' >
+					<img th:src='@{/img/back.png}' style='width:16px;transform:translateY(4px)'> 返回版面
+				</a>		
+			</div>
+		</div>
+		
+		<div class='main container pad' style='padding:10px'>		
+			<div class='form '>
+				<span class='label'> 帖子内容： </span><br>
+				<div class='edit'>
+					<input type='text' class='title' placeholder='标题可免' >
+					<textarea class='content' placeholder='内容10字以上'></textarea>
+				</div>				
+			</div>
+				
+			<div class='row '>
+				<button th:if="${session.userAbility.msgCount>0}" class='primary' onclick='my.save()'> 发表 </button>
+				<button th:if="${session.userAbility.msgCount<=0}"  style="cursor:not-allowed; background-color: gray;" title="今天发帖数已上限">发表帖子</button>
+			</div>
+				
+			<!-- 附件图片 -->
+			<div class="imglist" style="color: #666;margin-top: 40px;">
+				<input th:if="${session.userAbility.imageCount!=0}" class="hidden upload" type="file" onchange="my.selectFileOK(this)" />
+				<input th:if="${session.userAbility.imageCount==0}" class="hidden upload" type="file"  />
+				<div th:if="${session.userAbility.imageCount!=0}"> 上传附件图片：（最多3张） </div>
+				<div th:if="${session.userAbility.imageCount==0}"> 今天上传附件图片数已用尽 </div>
+				<div class="thumbbox">
+					<img class="thumb"  src="../../img/imageup.png" th:src="@{/img/imageup.png}" onclick="my.thumbClick(this)"/>
+					<img class="delete" src="../../img/delete.png" th:src="@{/img/delete.png}" onclick="my.thumbDelete(this)" />
+					<span class="num">1</span>
+				</div>
+				<div class="thumbbox">
+					<img class="thumb"  src="../../img/imageup.png" th:src="@{/img/imageup.png}" onclick="my.thumbClick(this)"/>
+					<img class="delete" src="../../img/delete.png" th:src="@{/img/delete.png}" onclick="my.thumbDelete(this)" />
+					<span class="num">2</span>
+				</div>
+				<div class="thumbbox">
+					<img class="thumb"  src="../../img/imageup.png" th:src="@{/img/imageup.png}" onclick="my.thumbClick(this)"/>
+					<img class="delete" src="../../img/delete.png" th:src="@{/img/delete.png}" onclick="my.thumbDelete(this)" />
+					<span class="num">3</span>
+				</div>
+			</div>
+			
+		</div>
+		
+		<div th:replace="~{common::footer}"></div>
+	</body>
+	
+	<script>
+		var my = {};
+		var t = 0;	//防止误点2次操作
+		
+		my.save = function(){
+            if(t==1){
+                layer.msg('经验+2', {
+                    time: 1000,
+                    function(){
+                        location.href='[[@{/message/list}]]'
+                    }
+                });
+				return;
+            };
+            t = 1;
+			var req = {};
+			req.title = $('.edit .title').val();
+			req.content = $('.edit .content').val();
+			if( $('.content').val().trim().length < 3){
+				alert('需输入10字符以上'); return;
+			}
+			if(req.title.length==0)
+			{
+				// 从正文里提取前30字作为标题
+				req.title = req.content.substring(0,30);
+				req.title = req.title.replace(/\\n/g, ''); // 去掉\n的换行符
+			}		
+			req.replyText = req.content.substring(0,30);	//初始正文前30字作为回复内容呈现
+			
+			// 附件图片,从<img>元素的data属性中取得
+			var imgNames = ['','',''];
+			var thumblist = $('.thumb');
+			for(var i=0; i<thumblist.length; i++)
+			{
+				if(thumblist[i].data!=null)
+					imgNames[i]  = thumblist[i].data.tmpName;	
+			}
+			req.img1 = imgNames[0];
+			req.img2 = imgNames[1];
+			req.img3 = imgNames[2];
+			
+			Af.rest('[[@{/u/message/save.do}]]' , req , function(data){
+				layer.msg('经验+2', {
+				    time: 1000,
+					end: function () {
+                        location.href='[[@{/message/list}]]'
+                    }
+				})
+				return;
+			})
+		}
+		
+		/* 附件图片上传 */
+		my.thumbClick = function(dom){
+			$('.upload').click(); // 模拟点击file控件
+			$('.upload')[0].target = dom;	// dom指的是 <img>控件 
+		}
+		my.thumbDelete = function(dom){
+			var thumb = $(dom).prev('.thumb');
+			$(thumb).attr('src', "[[@{/img/imageup.png}]]");
+			$(thumb).data = null;
+		}
+		
+		my.selectFileOK = function(button){
+			var file = button.files[0];
+			button.value = '';	// 清除file button的选择		
+			var thumb = button.target;	// <img>控件
+			
+			// 后缀检查
+			var type = file.type;
+			if(type!='image/jpeg' && type!= 'image/png'){ alert('不支持的类型' + type); return }
+			if(file.size > 1000000){ alert('图片太大,不得大于1MB!')}
+			
+			/* 开始上传 */
+			var uploader = new AfUploader();
+			uploader.uploadUrl = '[[@{/u/message/imageUp.do}]]';   // 服务URL
+			uploader.file = file;   // 文件对象
+			// uploader.args = {	'your_args': 'arg_value' }; // 额外的参数
+			
+			uploader.startUpload();		//开始上传
+			// 上传完成事件处理
+			uploader.processEvent = function(event){
+				if(event =='complete')
+				{
+					var result = JSON.parse(this.response);
+					if(result.error != 0){
+						alert( result.reason) ; return; // 不允许上传
+					}
+					var data = result.data;
+					
+					// 显示刚刚上传的记录
+					$(thumb).attr('src', data.tmpUrl);
+					thumb.data = data; // 记录应答数据
+				}
+			}
+			
+		}
+	
+	</script>
+	
+</html>

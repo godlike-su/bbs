@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>我的论坛</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+		
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" href="../../css/common.css" />
+		<link rel="stylesheet" th:href="@{/css/user.css}" href="../../css/user.css" />
+
+		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
+		<style>
+
+			
+		</style>
+	</head>
+	<body>	
+	<div class='container'>
+	
+		<!--头部-->
+		<div th:replace="~{common::header}"></div>
+		
+		<div class='main'>
+			<div class='head'>
+				我的论坛</a> | 用户注册
+			</div>
+			
+			<div class='form' >
+				<div class='row'>
+					<span class='label'> 账号 </span>
+					<input class='id' type='text'  oninput = "value=value.replace(/[^\d]/g,'')" >
+				</div >
+
+				<div class='row'>
+					<span class='label'> 用户名 </span>
+					<input class='name' type='text' 
+						onkeydown="nameDet($('.name').val().trim())"
+					   onmouseenter="nameDet($('.name').val().trim())"
+					   onmouseleave="nameDet($('.name').val().trim())"/>
+					<div class="nameDet row"  style="display:none;">
+						<span class='label'></span>
+						<input value="用户名不得为空或空格"  style="color:red" readonly/>
+					</div>
+					<script>
+						var nameDet = function(name)
+						{
+							if(name.length==0){
+								$('.nameDet').show();
+							}
+							else if(name.length>0){
+								$('.nameDet').hide();
+							}
+						}
+					</script>
+				</div >
+				
+				<div class='row'>
+					<span class='label'> 密码 </span>
+					<input class='password' type='password' onkeydown="passDet($('.password').val().trim())"
+					   onmouseenter="passDet($('.password').val().trim())"
+					   onmouseleave="passDet($('.password').val().trim())">
+					
+					<div class="passDet row"  style="display:none;">
+						<span class='label'></span>
+						<input value="密码不得为空或空格"  style="color:red" readonly/>
+					</div>
+					<script>
+						var passDet = function(password)
+						{
+							if(password.length==0){
+								$('.passDet').show();
+							}
+							else if(password.length>0){
+								$('.passDet').hide();
+							}
+						}
+					</script>
+				</div>
+
+				<div class='row'>
+					<span class='label'> 确认 </span>
+					<input class='password2' type='password' >
+				</div>
+
+				<div class='row'>
+					<span class='label'> &nbsp; </span>
+					<button onclick='my.register()' class='primary' style='margin-top:40px'> 注册用户 </button>
+					<a href="login.html" th:href='@{/login}' class="register"> 返回登录 </a>
+				</div>	
+											
+			</div>
+		</div>
+
+	</div>
+
+	<div th:insert="~{common::footer}"></div>
+	<script>
+		var my = {};
+		
+		my.register = function(){
+			var req = {};
+			req.id = Number($('.id').val());
+			req.name = $('.name').val().trim();
+			req.password = $('.password').val().trim();
+			var password2 = $('.password2').val().trim();
+
+            if(req.id==null){
+                alert('账号不得为空!') ; return;
+            }
+			if(req.name.length ==0){
+				alert('用户名不得为空!') ; return;
+			}
+			if(req.password.length == 0){
+				alert('密码不得为空!');return;
+			}
+			if(req.password != password2){
+				alert('密码不一致!');return;
+			}
+
+			Af.rest('[[@{/register.do}]]'  , req, function(data){
+				alert('注册成功');
+				location.href = '[[@{/login}]]' ;  // 跳到登录页
+			},function (error, reason) {
+                alert(reason);
+                my.refState();
+            })
+		}
+	</script>
+	</body>
+</html>

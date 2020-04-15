@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title> 出错了 </title>
+		
+		<script src="../js/jquery.min.js" th:src="@{/js/jquery.min.js}" ></script>
+		<link rel="stylesheet" href="../css/common.css" th:href="@{/css/common.css}" />
+		
+		<style>
+			.title{
+				font-size:14px;
+				font-weight: bold;
+			}
+			.message{
+				margin: 10px 0px;
+				font-size:14px;
+				color: #f00;
+			}
+			.detail{
+				font-size:12px;
+				overflow:scroll;
+				max-height:400px;
+			}
+			.hidden{
+				display:none;
+			}
+		</style>
+	</head>
+	<body>
+		<div class='container'>
+			<div class='row' style='border:1px solid #ccc; padding:10px'>
+				 <div class='title'> Oh, 出错了 ! </div>
+				 <div class='message' >
+				 	<span th:text="${message}"></span>
+				 	<button onclick='showDetail()'> 显示详情 </button>
+				 </div>	
+				 <div class='detail hidden' th:text="${detail}"></div>			  
+			</div>				
+		</div>
+	</body>
+	
+	<script>
+		function showDetail(){
+			$('.detail').toggleClass('hidden');
+		}
+	</script>
+</html>

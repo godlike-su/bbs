@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+ <mapper namespace="user">
+    <!--注册信息-->
+     <insert id="insertUser" parameterType="my.app.db.User" useGeneratedKeys="true" keyProperty="id" >
+      INSERT INTO `user`
+        (`id`, `name`, `password`, `sex`, `qqid`, `qq`, `qqFlag`, `qqName`, `email`, `emailFlag`, `phone`, `phoneFlag`, `thumb`, `level`, `vip`, `vipName`, `isAdmin`, `timeCreate`, `timeUpdate`, `timeLogin`)
+  VALUES(#{id}, #{name}, #{password}, #{sex}, #{qqid}, #{qq}, #{qqFlag}, #{qqName}, #{email}, #{emailFlag}, #{phone}, #{phoneFlag}, #{thumb}, #{level}, #{vip}, #{vipName}, #{isAdmin}, #{timeCreate}, #{timeUpdate}, #{timeLogin})
+
+
+     </insert>
+
+    <select id="selectUser" resultType="my.app.db.User">
+        select * from user where 1=1
+        <if test="id != null">
+            AND id = #{id}
+        </if>
+        <if test="name != null">
+            AND name = #{name}
+        </if>
+        <if test="password != null">
+            AND password = #{password}
+        </if>
+        limit 1
+    </select>
+
+    <!--修改账户-->
+    <update id="updateOne" parameterType="hashmap">
+        UPDATE user
+        <trim prefix="set" suffixOverrides=",">
+            <if test="name != null">name=#{name}</if>
+            <if test="sex != null">sex=#{sex}</if>
+            <if test="thumb != null">thumb=#{thumb},</if>
+            <if test="password != null">password=#{password},</if>
+            <if test="vip != null">vip=#{vip},</if>
+            <if test="vipName != null">vipName=#{vipName},</if>
+            <if test="experience != null">experience= #{experience},</if>
+            <if test="level != null">level=#{level},</if>
+        </trim>
+        WHERE 1=1
+        <if test="id != null">
+            AND id=#{id}
+        </if>
+        <if test="qqid != null">
+            AND qqid = #{qqid}
+        </if>
+
+    </update>
+
+    <!--查看所有用户信息-->
+    <select id="selectAll" resultType="my.app.db.User">
+        SELECT * FROM user WHERE 1=1
+        <if test="id!=null">
+            AND id = #{id}
+        </if>
+        <if test="qqid != null">
+            AND qqid = #{qqid}
+        </if>
+        <if test="filter!=null">
+            AND name like "%"#{filter}"%"
+        </if>
+        <if test="startIndex != null and pageSize != null">
+            LIMIT #{startIndex}, #{pageSize}
+        </if>
+    </select>
+
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT COUNT(id) FROM user WHERE 1=1
+        <if test="filter!=null">
+            AND name like "%"#{filter}"%"
+        </if>
+    </select>
+
+    <!--查看一个用户信息-->
+    <select id="selectOne" resultType="hashmap">
+        SELECT * FROM user WHERE 1=1
+        <if test="id!=null">
+            AND id=#{id}
+        </if>
+    </select>
+
+ </mapper>

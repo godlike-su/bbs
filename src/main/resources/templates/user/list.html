@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> 我的论坛 </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" />
+
+		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
+		<style>
+			
+			.main{
+				margin: 40px auto auto auto;
+				background-color: #fcfcfc;
+				border-radius: 10px;
+				padding: 10px;
+			}
+			
+			.head{
+				position: relative;
+				padding: 2px 2px ;
+				border-bottom: 1px solid #f1f1f1;
+				background-color: #fcfcfc;				
+				text-align: left;
+				height: 50px;
+				line-height: 46px;				
+			}	
+			
+			.label{
+				display: inline-block;
+				width: 100px;
+				text-align: right;
+			}
+			<!--表格-->
+			.profile{
+				width:100%;
+				border-color:#f1f1f1;
+			}
+			/*.profile .c1{*/
+				/*width: 30%;*/
+				/*padding: 10px;*/
+				/*color:#888;*/
+				/*text-align: right;*/
+			/*}*/
+			.profile .c2{
+				width: 100px;
+				padding: 10px 0 10px 30px;
+				background-color: #fff;
+				text-align: left;
+			}
+
+			
+		</style>
+		
+	</head>
+	<body>
+		<!--头部-->
+		<div th:replace=" ~{common::header}"></div>
+		
+		<div class="container">
+			<div class="main">
+				<div class="head">
+					<img src="../../img/edit.png" th:src="@{/img/edit.png}" style="width: 14px;" /> &nbsp;
+					所有用户资料
+					
+					<!--模糊查询-->
+					<div style="position: absolute; right: 0px; top:0; padding: 10px;">
+						<div class="search">
+							<input class="filter" type="text" placeholder="按昵称查询"
+								   th:text=${filter}
+								   onkeydown='if(event.keyCode==13)my.search();' />
+					
+							<img class="clearbtn" src="../../img/clear.png" th:src="@{/img/clear.png}"
+								 onclick="$('.filter').val(''); my.search()"
+								 title="清除" />
+					
+							<img class="okbtn" src="../../img/search.png" th:src="@{/img/search.png}"
+								 onclick='my.search()'
+								 title = '查询'/>
+						</div>
+					</div>
+				</div>
+				
+				<table class='profile' >
+					<tr>
+						<th class="c2">id</th>
+						<th class="c2">name</th>
+						<th class="c2">qqid</th>
+						<th class="c2">qqName</th>
+						<th class="c2">level</th>
+						<th class="c2">vip</th>
+						<th class="c2">vipName</th>
+						<th class="c2">isAdmin</th>
+					</tr>
+					<tr th:each=" row , state: ${userList}" >
+						<td>
+							<a th:href="@{/u/user/edit(id=${row.id})}">[[${row.id}]]</a>
+						</td>
+						<td>[[${row.name}]]</td>
+						<td>[[${row.qqid}]]</td>
+						<td>[[${row.qqName}]]</td>
+						<td>[[${row.level}]]</td>
+						<td>[[${row.vip}]]</td>
+						<td>[[${row.vipName}]]</td>
+						<td>[[${row.isAdmin}]]</td>
+					</tr>
+				</table>
+			</div>
+			<!--页码-->
+			<div class='bottombar'>
+				<div class='page-index-bar' style='margin:0px' ></div>
+			</div>
+		</div>
+		
+		<!--密码输入框-->
+		<div th:insert=" ~{dialog::simple_text_dialog}"></div>
+	</body>
+	
+	<script>
+        var my = {};
+
+        var pageCount = [[${pageCount}]];
+        var pageNumber = [[${pageNumber}]];
+        var serviceUri = '[[@{/u/user/list}]]' ; // 当前查询的URI
+
+        // 初始化执行: 分页显示
+        my.initPage = function(){
+            var str = "";
+
+            var skipped = false;
+            for(var i=1; i<=pageCount; i++)
+            {
+                // 如果页面数过多，则添加一个省略号
+                if(i< pageNumber - 2 && i >= 2)
+                {
+                    if(!skipped ) str += "...";
+                    skipped = true;
+                    continue;
+                }
+                if(i> pageNumber + 2 && i <= pageCount - 1)
+                {
+                    if(!skipped ) str += "...";
+                    skipped = true;
+                    continue;
+                }
+                skipped = false;
+
+                // 当前页码： 以高亮显示
+                if(i == pageNumber)
+                    str += "<label class='page static'> ##1 </label>".replace(/##1/g, i);
+                else
+                    str += "<a class='page' href='##2'> ##1 </a>"
+                        .replace(/##1/g, i)
+                        .replace(/##2/g, my.pageUrl(i));
+
+
+                $('.page-index-bar').html(str);
+            }
+        }(); // 立即执行 my.initPage()
+
+        // 条件查询
+        my.search = function(){
+            location.href = my.pageUrl (1);
+        }
+
+        //输入当前页，返回url路径
+        my.pageUrl = function(pageNumber){
+            var url = '[[@{/u/user/list}]]';
+            url += '?pageNumber=' + pageNumber;
+
+            // http://127.0.0.1:8080/book/list?pageNumber=1&filter=%E6%A0%A1%E8%8A%B1&niceFlag=0
+            var filter = $('.filter').val().trim();
+            if(filter.length > 0)
+                url += '&filter=' + encodeURIComponent(filter);
+            return url;
+        }
+		
+	</script>
+</html>

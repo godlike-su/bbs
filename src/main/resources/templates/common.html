@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		
+		<script th:src="@{/js/jquery.min.js}" src="../js/jquery.min.js"></script>
+		<script th:src="@{/js/afquery.js}" src="../js/afquery.js"></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" href="../css/common.css" />
+
+		<style>
+			.lookup{
+					position: absolute;
+					right: 0px;
+					top: 0;
+					border: 1px solid #b7bef9;
+					padding: 2px 6px;
+					
+			}
+		</style>
+	</head>
+	<body>
+		<div th:fragment='top' class="header container" style="text-align: left; 
+		position: relative;">
+		
+		</div>
+		
+		<!-- 头部 -->
+		<div th:fragment='header' class='header container' >
+			<div class='left'>
+				<a th:href="@{/message/list}"><img th:src='@{/img/logo.png}' style='height:30px'></a>
+			</div>
+
+			<div class='right'>
+			<span th:switch='${session.user!=null}' class='item' style='position: relative;padding-left: 20px;'>
+				<a th:case='true' th:href='@{/u/profile/edit}' >
+					<img th:if="${session.user.thumb==null}" class='vcenter' th:src='@{/img/user2.png}'  >
+					<img th:if="${session.user.thumb!=null}" class='vcenter' th:src='@{${session.user.thumb}}' style="max-width: 16px;max-height: 16px;" >
+					[[${session.user.name}]]
+				</a>
+
+				<a th:case='false' href='javascript:void(0)' onclick='pleaseLogin()'>请登录</a>
+				<script>
+					window.pleaseLogin =function(){
+                        location.href = '[[@{/login}]]' + '?returnUrl=' + location.href;
+                    }
+				</script>
+			</span>
+			</div>
+		</div>
+		
+		<!-- 尾部 -->
+		<div th:fragment="footer">
+				<div style="width:300px;margin:0 auto; padding:20px 0;">
+				 	<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=45100202000293" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="../icon/beian.png"  style="float:left;" th:src=" @{/icon/beian.png}"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">桂公网安备 45100202000293号</p></a>
+					<a target="_blank" href="http://www.beian.miit.gov.cn/" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">ICP认证：桂ICP备19010450号</p></a>			
+				</div>
+		</div>
+		
+		<div th:fragment='footer2' class="footer container">
+			
+		</div>
+	</body>
+</html>
