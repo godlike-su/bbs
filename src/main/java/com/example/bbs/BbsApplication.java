@@ -33,7 +33,7 @@ public class BbsApplication {
         FilterRegistrationBean filterBean = new FilterRegistrationBean();
         filterBean.setFilter(new BootFilter());
         filterBean.setName("BootFilter");
-        filterBean.addUrlPatterns("/*");
+        filterBean.addUrlPatterns("");
         
         return filterBean;
     }

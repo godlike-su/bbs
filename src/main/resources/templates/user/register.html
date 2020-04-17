@@ -86,6 +86,13 @@
 				</div>
 
 				<div class='row'>
+					<span class='label'> 验证码 </span>
+					<input class='state' type='text'
+						   onkeydown='if(event.keyCode==13)my.register();'>
+					<img class='verifyImg' style='width:80px;height:30px;background-color: #f5f59e;' onclick="my.refState()" title="点击刷新验证码">
+				</div >
+
+				<div class='row'>
 					<span class='label'> &nbsp; </span>
 					<button onclick='my.register()' class='primary' style='margin-top:40px'> 注册用户 </button>
 					<a href="login.html" th:href='@{/login}' class="register"> 返回登录 </a>
@@ -102,21 +109,32 @@
 		
 		my.register = function(){
 			var req = {};
-			req.id = Number($('.id').val());
-			req.name = $('.name').val().trim();
-			req.password = $('.password').val().trim();
+			var user = {};
+            user.id = Number($('.id').val());
+            user.name = $('.name').val().trim();
+			user.password = $('.password').val().trim();
 			var password2 = $('.password2').val().trim();
+			req.user = user;
 
-            if(req.id==null){
+            req.state = $('.state').val().trim();
+            if(req.state.length==0){
+                alert('验证码不得为空!') ; return;
+            }
+            req.state = Number($('.state').val());
+            if(req.state.length==0 || isNaN(req.state)){
+                alert('请正确输入验证码!') ; return;
+            }
+
+            if(user.id==null){
                 alert('账号不得为空!') ; return;
             }
-			if(req.name.length ==0){
+			if(user.name.length ==0){
 				alert('用户名不得为空!') ; return;
 			}
-			if(req.password.length == 0){
+			if(user.password.length == 0){
 				alert('密码不得为空!');return;
 			}
-			if(req.password != password2){
+			if(user.password != password2){
 				alert('密码不一致!');return;
 			}
 
@@ -128,6 +146,21 @@
                 my.refState();
             })
 		}
+
+        my.refState = function () {
+            Af.rest("[[@{/loginState.do}]]", "", function (data) {
+                $('.state').attr("placeholder", data);
+                $('.state').val("");
+                var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+                $('.verifyImg').attr('src', verifyImgUrl);
+            })
+        }
+
+        Af.rest('[[@{/loginState.do}]]' , "", function(data){
+            var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+            $('.verifyImg').attr('src', verifyImgUrl);
+            $('.state').val("");
+        })
 	</script>
 	</body>
 </html>

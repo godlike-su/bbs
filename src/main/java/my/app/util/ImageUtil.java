@@ -15,9 +15,9 @@ import java.util.Map;
 public class ImageUtil
 {
 	//用户头像路径
-	public static FileStore store 
+	public static FileStore store
 	= new FileStore("c:/bbsfile/photo/", "/bbsfile/photo/");
-	
+
     //上传用户头像
     public static String usePhoto(HttpServletRequest request, User user, File tmpImage) throws Exception
     {
@@ -29,8 +29,8 @@ public class ImageUtil
 //        String urlPrefix = "/bbsfile/photo/";
 //        String rootDir = request.getServletContext().getRealPath(urlPrefix);
 //        FileStore store = new FileStore(rootDir, urlPrefix);
-        
-        
+
+
         // 先删除旧的照片
         if(user.thumb!=null && user.thumb.length()>0)
         {

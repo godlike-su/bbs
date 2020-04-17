@@ -9,6 +9,8 @@ import my.app.support.MyBatis;
 import my.app.util.MyUtil;
 import my.app.util.UserAbilityUtil;
 import my.app.util.UserLoginUtil;
+import my.app.util.VerifyPng;
+
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -106,10 +108,6 @@ public class LoginController
         if(returnUrl==null) returnUrl="";
         model.addAttribute("returnUrl", returnUrl);
         
-        //验证码
-        String stateStr = stateCode(session);
-        model.addAttribute("stateStr", stateStr);
-
         return "user/login";
     }
 
@@ -132,6 +130,7 @@ public class LoginController
             return new AfRestError("验证码错误或超时，请刷新验证码");
         }
         session.removeAttribute("stateCode");
+        session.removeAttribute("verifyCode");
 
         User user = null;
         try(SqlSession sqlsession = MyBatis.factory.openSession()){
@@ -170,15 +169,32 @@ public class LoginController
         return "redirect:/message/list";
     }
     
-    //验证码
+    //获取验证码
     @PostMapping("/loginState.do")
-    public Object login(HttpSession session) throws Exception
+    public Object loginState(HttpSession session) throws Exception
     {
         //验证码
-        String stateStr = stateCode(session);
-
-        return new AfRestData(stateStr);
+        String verifyCode = stateCode(session);
+        session.setAttribute("verifyCode", verifyCode);
+        // 生成PNG发给客户端
+        return new AfRestData("");
     }
+    
+    //显示验证码
+    @GetMapping("/show")
+    public void show(HttpSession session,  HttpServletResponse response) throws Exception
+    {
+    	//验证码
+        String verifyCode = (String) session.getAttribute("verifyCode");
+        // 生成PNG发给客户端，生成伪静态图片
+        response.setContentType("image/png");
+        response.setHeader("Cache-Control", "no-cache");
+        VerifyPng v = new VerifyPng();
+        
+        v.toPNG(verifyCode, response.getOutputStream());
+    }
+    
+    
 
     //登录验证码
 	public static String stateCode(HttpSession session)

@@ -77,9 +77,8 @@
 				<div class='row'>
 					<span class='label'> 验证码 </span>
 					<input class='state' type='text' 
-						   onkeydown='if(event.keyCode==13)my.login();' th:placeholder=${stateStr}
-					>
-					<button class="stateSpan" onclick="my.refState()">刷新</button>
+						   onkeydown='if(event.keyCode==13)my.login();'>
+					<img class='verifyImg' style='width:80px;height:30px;background-color: #f5f59e;' onclick="my.refState()" title="点击刷新验证码">
 				</div >
 				
 				<div class='row'>
@@ -136,11 +135,18 @@
 
         my.refState = function () {
             Af.rest("[[@{/loginState.do}]]", "", function (data) {
-                // $('.stateSpan').html(data);
-                $('.state').attr("placeholder", data);
+            	$('.state').attr("placeholder", data);
                 $('.state').val("");
+                var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+                $('.verifyImg').attr('src', verifyImgUrl);
             })
         }
+        
+        Af.rest('[[@{/loginState.do}]]' , "", function(data){
+            var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+            $('.verifyImg').attr('src', verifyImgUrl);
+            $('.state').val("");
+        })
 	</script>
 	</body>
 </html>

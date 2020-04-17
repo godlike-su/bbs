@@ -3,11 +3,12 @@ package my.app.suController;
 import af.spring.AfRestData;
 import af.spring.AfRestError;
 import com.alibaba.fastjson.JSONObject;
+
+import my.app.controller.MesgImgController;
 import my.app.db.User;
 import my.app.support.MyBatis;
 import my.app.util.ImageUtil;
 import my.app.util.MyUtil;
-import my.app.util.TmpFile;
 import my.app.util.UserUtil;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Controller;
@@ -99,7 +100,7 @@ public class UserSetController
             String suffix = MyUtil.getSuffix(realName);
             String tmpName = MyUtil.guid2() + suffix;
 
-            File tmpFile = TmpFile.getFile(request, tmpName);
+            File tmpFile = MesgImgController.store.getFile(tmpName);
 
             //接收上传...
             mf.transferTo(tmpFile);
@@ -119,12 +120,16 @@ public class UserSetController
                 return new AfRestError("没有该用户id：" + id);
 
             String url = ImageUtil.usePhoto(request, u, tmpFile);
+            //判断，如果是换自己的头像，则为session中的用户信息也要更改
+            if(id == user.id)
+                user.thumb = url;
 
             // 回应给客户端的消息
             result.put("realName", realName);
             result.put("tmpName", tmpName);
-            result.put("tmpUrl", TmpFile.getUrl(request, tmpName));
+            result.put("tmpUrl", MesgImgController.store.getUrl(tmpName));
             result.put("url", url);
+            result.put("isOwn", id==user.id);
         }
         return new AfRestData(result);
     }

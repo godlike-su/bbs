@@ -79,7 +79,7 @@ public class QQController2
 		String qqState = (String) session.getAttribute("qqState");
 		if(! state.equals(qqState))
 		{
-			throw new Exception("访问已经失效，请重新登录");
+			throw new Exception("访问已经失效，请重新登录!");
 //			return "redirect:/qq/loign";
 		}		
 		session.removeAttribute("qqState");
@@ -165,34 +165,25 @@ public class QQController2
                     }
                     System.out.println("创建qq数据成功......");
 
-                    //下载图片到本地
-                    String path = String.format("%03d/%d_%s.jpg",
-                            id / 1000, id, MyUtil.guid2());
+                    //下载图片到本地，文件名
+                    String photoName = String.format("%s.jpg", MyUtil.guid2());
 
-                    //保存qq头像路径 /bbsfile/photo
-                    String urlPrefix = "/bbsfile/photo/";
-                    String rootDir = request.getServletContext().getRealPath(urlPrefix);
-                    FileStore store = new FileStore(rootDir, urlPrefix);
+                    //保存qq头像路径，先存到 tmp 临时目录
+                    FileStore store = MesgImgController.store;
+                    
                     //
-                    File dstFile = store.getFile(path);
+                    File dstFile = store.getFile("");
                     dstFile.getParentFile().mkdirs(); // 创建层次目录
                     //从网页下载图片方法。放入网页图片地址， 与保存地址
                     HTTP http = new HTTP();
-                    http.download(imgUrl, store.getFile(""), path, 10000000);
-                    //获取相对地址，用于html显示的路径
-                    String pathFile = store.getUrl(path);
-
-                    map.put("thumb", pathFile);
-                    //暂不启用
+                    http.download(imgUrl, dstFile, photoName, 10000000);
+//                    http.close();
+                    
+                    // 头像的正式URL
+                    String url = ImageUtil.usePhoto(request, user, store.getFile(photoName));
+//                    //暂不启用
 //                    map.put("qq", "qq" + id);
-                    //修改头像
-                    try (SqlSession sql = MyBatis.factory.openSession())
-                    {
-                        sql.update("user.updateOne", map);
-                        sql.commit();
-                    }
-    //						map.put("imgUrl", imgUrl);
-                    //user_ability
+
                     UserAbility userAbility = new UserAbility();
                     UserAbilityUtil.init(userAbility, user.id);
                     try(SqlSession sql = MyBatis.factory.openSession()){
@@ -200,7 +191,6 @@ public class QQController2
                         sql.commit();
                     }
 
-                    user.thumb = pathFile;
                     session.setAttribute("user", user);
                     session.setAttribute("userAbility",userAbility);
                     return "forward:/message/list";

@@ -23,21 +23,19 @@ import my.app.util.MyUtil;
 @Controller
 public class tmpUrlService
 {
-	@GetMapping("/tmp/**")
+	@GetMapping("/bbsfile/tmp/**")
 	public void ImageUrl(HttpServletRequest request, HttpServletResponse response) throws Exception
 	{
 		// requestUri: 例如 /luntan/bbsfile/message/202003/24/15850605784804/15850605388631.jpg
 		String requestUri = request.getRequestURI();
 		
 		//取得文件名
-		String prefix = "/tmp/";
+		String prefix = "/bbsfile/tmp/";
 		int p = requestUri.indexOf(prefix);
 		String filePath = requestUri.substring(p + prefix.length());
-		
-		
-		//目标文件  
+
+		//目标文件
 		//**************************************************注意是否正确
-//		File targetFile = tmpStore.getFile(filePath);
 		File targetFile = MesgImgController.store.getFile(filePath);
 		
 		// 检查目标文件是否存在

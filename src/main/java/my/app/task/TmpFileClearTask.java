@@ -12,22 +12,13 @@ import java.io.File;
  */
 public class TmpFileClearTask implements Task
 {
-    String rootDir;
     int EXPIRED = 1000 * 3600 * 3; // 3小时以上的临时文件
 //    int EXPIRED = 0; // 测试使用
-
-    public TmpFileClearTask(String rootDir)
-    {
-        this.rootDir = rootDir;
-    }
-
 
     @Override
     public void execute() throws Exception
     {
-        if(rootDir == null) return;
-        rootDir = rootDir + "/tmp";
-        File tmpDir = MesgImgController.store.getFile("/");
+        File tmpDir = MesgImgController.store.getFile("");
         if(! tmpDir.exists()) return;
         File[] files = tmpDir.listFiles();
         if(files == null || files.length ==0)

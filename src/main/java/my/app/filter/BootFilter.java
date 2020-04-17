@@ -21,7 +21,6 @@ import my.app.task.UserAbilityRestoreTask;
  *  
  */
 
-//@WebFilter(urlPatterns = "/*", filterName = "myfilter")
 public class BootFilter implements Filter
 {
 	DailyTaskManager daily = new DailyTaskManager();
@@ -29,9 +28,8 @@ public class BootFilter implements Filter
 	@Override
 	public void init(FilterConfig filterCfg) throws ServletException
 	{
-		String rootDir = filterCfg.getServletContext().getRealPath("/");
-		daily.addTask(new MsgDelTask(rootDir), "清理message表");
-		daily.addTask(new TmpFileClearTask(rootDir), "清理tmpFile文件");
+		daily.addTask(new MsgDelTask(), "清理message表");
+		daily.addTask(new TmpFileClearTask(), "清理tmpFile文件");
 		daily.addTask(new UserAbilityRestoreTask(), "权力恢复");
 		daily.doStart();
 	}

@@ -19,12 +19,6 @@ import java.util.Map;
  */
 public class MsgDelTask implements Task
 {
-    String rootDir = "";
-    public MsgDelTask(String rootDir)
-    {
-        this.rootDir = rootDir;
-    }
-
     @Override
     public void execute() throws Exception
     {
@@ -37,7 +31,7 @@ public class MsgDelTask implements Task
         for(Message msg : msgList)
         {
             try{
-                clearMessage( msg,rootDir );
+                clearMessage( msg );
             }catch(Exception e)
             {
                 e.printStackTrace();
@@ -45,7 +39,7 @@ public class MsgDelTask implements Task
         }
     }
 
-    private void clearMessage(Message msg, String rootDir) throws Exception
+    private void clearMessage(Message msg) throws Exception
     {
         // 删除附件照片目录
 //        String urlPrefix = "bbsfile/message/";

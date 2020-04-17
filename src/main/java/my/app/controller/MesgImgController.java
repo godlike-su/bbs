@@ -5,7 +5,6 @@ import af.spring.AfRestError;
 import my.app.db.User;
 import my.app.util.FileStore;
 import my.app.util.MyUtil;
-import my.app.util.TmpFile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
@@ -57,7 +56,7 @@ public class MesgImgController
             // 回应给客户端的消息
             result.put("realName", realName);
             result.put("tmpName", tmpName);
-            result.put("tmpUrl", TmpFile.getUrl(request, tmpName));
+            result.put("tmpUrl", store.getUrl(tmpName));
         }
         return new AfRestData(result);
     }

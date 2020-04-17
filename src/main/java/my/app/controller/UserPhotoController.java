@@ -6,7 +6,6 @@ import my.app.support.MyBatis;
 import my.app.util.FileStore;
 import my.app.util.ImageUtil;
 import my.app.util.MyUtil;
-import my.app.util.TmpFile;
 import org.apache.commons.io.FileUtils;
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Controller;
@@ -32,7 +31,6 @@ import java.util.Map;
 public class UserPhotoController
 {
 	
-	
     public UserPhotoController(ServletContext servletContext)
     {
     }
@@ -55,7 +53,7 @@ public class UserPhotoController
             String suffix = MyUtil.getSuffix(realName);
             String tmpName = MyUtil.guid2() + suffix;
 
-            File tmpFile = TmpFile.getFile(request, tmpName);
+            File tmpFile = MesgImgController.store.getFile(tmpName);
 
             //接收上传...
             mf.transferTo(tmpFile);
@@ -65,13 +63,11 @@ public class UserPhotoController
                 throw new Exception("图片太大!需小于500KB!");
 
             // 头像的正式URL
-
             String url = ImageUtil.usePhoto(request, user, tmpFile);
 
             // 回应给客户端的消息
             result.put("realName", realName);
             result.put("tmpName", tmpName);
-            result.put("tmpUrl", TmpFile.getUrl(request, tmpName));
             result.put("url", url);
         }
         return new AfRestData(result);
