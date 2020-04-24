@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>注册成功</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+		
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" href="../../css/common.css" />
+		<link rel="stylesheet" th:href="@{/css/user.css}" href="../../css/user.css" />
+
+		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
+		
+	</head>
+	<body>	
+	<div class='container'>
+	
+		<!--头部-->
+		<div th:replace="~{common::header}"></div>
+		
+		<div class='main'>
+			<div class="head" style="border: 0;">
+				<svg viewBox="0 0 1000 300">
+					<symbol id="line-text">
+						<text text-anchor="middle" x="50%" y="50%" dy=".4em">
+							我的论坛|注册成功
+						</text>
+					</symbol>
+
+					<use xlink:href="#line-text" class="text"></use>
+					<use xlink:href="#line-text" class="text"></use>
+					<use xlink:href="#line-text" class="text"></use>
+					<use xlink:href="#line-text" class="text"></use>
+				</svg>
+			</div>
+			
+			<div class='form' >
+				<div class='row'>
+					<span class='label' style="font-size: 30px;"> 账号： </span>
+					<label style="font-size: 30px;" >[[${id}]]</label>
+				</div >
+
+				<div class='row'>
+					<span class='label'> &nbsp; </span>
+					<a href="login.html" th:href='@{/login}' class="register" target="_blank"> 前往登录 </a>
+				</div>	
+											
+			</div>
+		</div>
+
+	</div>
+
+	<div th:insert="~{common::footer}"></div>
+	<script>
+		var my = {};
+		
+		
+	</script>
+	</body>
+</html>

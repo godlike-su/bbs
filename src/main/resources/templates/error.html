@@ -34,7 +34,7 @@
 				 <div class='message' >
 				 	<span th:text="${message}"></span>
 				 	<button onclick='showDetail()'> 显示详情 </button>
-				 	<a href="http://www.wb1.club/luntan/login">返回登录页</a>
+					 <a th:href="@{/login}" style="padding-left: 20px;">重新登录</a>
 				 </div>	
 				 <div class='detail hidden' th:text="${detail}"></div>			  
 			</div>				

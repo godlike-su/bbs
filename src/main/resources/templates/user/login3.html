@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="//at.alicdn.com/t/font_1576261_51iq19kjpqg.css">
+		<link rel="stylesheet" href="css/style.css" th:href="@{/css/style.css}" />
+
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<title>我的论坛|登录</title>
+	</head>
+	<body>
+		<div class="form-wrapper">
+			<div  class='header container' style="width:300px;margin: 0px auto auto auto;position: relative;height: 44px;margin-bottom: 6px;">
+				<div class='left' style="position: absolute;left: 10px;top: 50%;transform:translateY(-50%);">
+					<a th:href="@{/message/list}"><img th:src='@{/img/logo.png}' style='height:30px'></a>
+				</div>
+			
+				<div class='right' style="position: absolute;right: 10px;top: 50%;transform:translateY(-50%);">
+				<span th:switch='${session.user!=null}' class='item' style='position: relative;padding-left: 20px;'>
+					<div th:case='true' >
+						<a th:href='@{/u/profile/edit}' style="color: #ff6f5c;">
+							<img th:if="${session.user.thumb==null}" class='vcenter' th:src='@{/img/user2.png}'  >
+							<img th:if="${session.user.thumb!=null}" class='vcenter' th:src='@{${session.user.thumb}}' style="max-width: 16px;max-height: 16px;" >
+							[[${session.user.name}]]
+						</a>
+						<!--菜单栏 暂未实现-->
+						<ul  style="list-style:none; display: none; top:10px">
+							<li>
+								<a th:href='@{/u/profile/edit}' style="color: #ff6f5c;">查看用户信息</a>
+							</li>
+						</ul>
+					</div>
+			
+					<a th:case='false' href='javascript:void(0)' onclick='pleaseLogin()' style="color: #ff6f5c;">请登录</a>
+					<script>
+						window.pleaseLogin =function(){
+			                location.href = '[[@{/login}]]' + '?returnUrl=' + location.href;
+			            }
+					</script>
+				</span>
+				</div>
+			</div>
+			
+			<!-- <div class="header">
+				我的论坛|登录
+			</div> -->
+			
+			<div class='main'>
+				<div class="head" style="border: 0;">
+					<svg viewBox="0 0 1000 300">
+						<symbol id="line-text">
+							<text text-anchor="middle" x="50%" y="50%" dy=".4em">
+								我的论坛|登录
+							</text>
+						</symbol>
+				
+						<use xlink:href="#line-text" class="text"></use>
+						<use xlink:href="#line-text" class="text"></use>
+						<use xlink:href="#line-text" class="text"></use>
+						<use xlink:href="#line-text" class="text"></use>
+					</svg>
+				</div>
+			</div>
+			
+			<div class="input-wrapper">
+				<div class="border-wrapper">
+					<input type="text" name="username" placeholder="账号" class="id border-item" 
+					oninput = "value=value.replace(/[^\d]/g,'')"/>
+				</div>
+				<div class="border-wrapper">
+					<input type="password" name="password" placeholder="密码" class="password border-item"/>
+				</div>
+				<div class="border-wrapper" style="width: 50%;display: inline-flex;">
+					<input type="text" name="state" placeholder="验证码" class="state border-item"
+					onkeydown='if(event.keyCode==13)my.login();' />
+				</div>
+				<img class='verifyImg' onclick="my.refState()" title="点击刷新验证码" style="height: 40px;padding: 0px;margin-left: 15px;background-color: #f5f59e" alt="验证码" />
+			</div>
+			<div class="action">
+				<div class="btn" onclick='my.login()'>login</div>
+			</div>
+			<div class="icon-wrapper">
+				推荐使用：<i class="iconfont"><a href="loginByQQ" ><img th:src="@{/img/qq.png}"></a></i>
+
+			</div>
+			<div class="msg">
+				Don`t have account? <a th:href='@{/register}' href="#">Sign up</a>
+			</div>
+		</div>
+	</body>
+	
+	<script>
+		var my = {};
+		var returnUrl =	'[[${returnUrl}]]';
+		
+		my.login = function(){
+			var req = {};
+			// req.name = $('.name').val().trim();
+	        req.id = $('.id').val().trim();
+			req.password = $('.password').val().trim();
+			req.state = $('.state').val().trim();
+			
+			if(req.id.length == 0){
+				alert('账号不得为空!') ; return;
+			}
+			req.id = Number($('.id').val());
+	        if(req.password.length==0){
+	            alert('密码不得为空!') ; return;
+	        }
+	        if(req.state.length==0){
+	            alert('验证码不得为空!') ; return;
+	        }
+	        req.state = Number($('.state').val());
+	        if(req.state.length==0 || isNaN(req.state)){
+	            alert('请正确输入验证码!') ; return;
+	        }
+			
+			Af.rest('[[@{/login.do}]]'  , req, function(data){
+				// alert('登录成功');
+				//登录跳转
+				if(returnUrl.length > 0)
+				    location.href = returnUrl;
+				else
+					location.href = '[[@{/}]]' ;  // 跳到首页
+			},function (error, reason) {
+			    alert(reason);
+				my.refState();
+	        })
+		}
+	
+	    my.refState = function () {
+	        Af.rest("[[@{/loginState.do}]]", "", function (data) {
+	            $('.state').val("");
+	            var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+	            $('.verifyImg').attr('src', verifyImgUrl);
+	        })
+	    }
+	    
+	    Af.rest('[[@{/loginState.do}]]' , "", function(data){
+	        var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+	        $('.verifyImg').attr('src', verifyImgUrl);
+	        $('.state').val("");
+	    })
+	</script>
+</html>

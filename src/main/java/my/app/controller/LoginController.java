@@ -10,11 +10,11 @@ import my.app.util.MyUtil;
 import my.app.util.UserAbilityUtil;
 import my.app.util.UserLoginUtil;
 import my.app.util.VerifyPng;
-
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -34,7 +34,7 @@ public class LoginController
 {
     //注册界面
     @GetMapping("/register")
-    public String register(Model model, HttpSession session)
+    public String register(Model model)
     {
         return "user/register";
     }
@@ -45,8 +45,19 @@ public class LoginController
     public Object register(HttpServletRequest request,
                            HttpServletResponse response,
                            HttpSession session,
-                           @RequestBody User user) throws Exception
+                           @RequestBody JSONObject jreq) throws Exception
     {
+        //安全监测，验证码监测
+        int state = jreq.getInteger("state");
+        if(state!=(int)session.getAttribute("stateCode"))
+        {
+            return new AfRestError("验证码错误或超时，请刷新验证码");
+        }
+        session.removeAttribute("stateCode");
+        session.removeAttribute("verifyCode");
+
+
+        User user = jreq.getObject("user", User.class);
 //        user.id = user.id;
         user.name = user.name.trim();
         user.password = user.password.trim();
@@ -98,7 +109,15 @@ public class LoginController
             sql.commit();
         }
 
-        return new AfRestData("");
+        return new AfRestData(user.id);
+    }
+
+    //注册成功界面
+    @GetMapping("/prompt/{id}")
+    public String prompt(Model model, @PathVariable int id)
+    {
+        model.addAttribute("id", id);
+        return "user/prompt";
     }
 
     //登录界面  returnUrl 保存有用户上一个界面链接，登录完成跳转回用户的上一个链接
@@ -108,7 +127,7 @@ public class LoginController
         if(returnUrl==null) returnUrl="";
         model.addAttribute("returnUrl", returnUrl);
         
-        return "user/login";
+        return "user/login3";
     }
 
     //登录
@@ -142,10 +161,10 @@ public class LoginController
             user = sqlsession.selectOne("user.selectUser", map);
         }
         //如果账号为空
-        if(user == null )
-        {
-            return new AfRestError("账号不存在");
-        }
+//        if(user == null )
+//        {
+//            return new AfRestError("账号不存在");
+//        }
         //如果密码错误
         if(!password.equals(user.password))
         {
@@ -174,19 +193,19 @@ public class LoginController
     public Object loginState(HttpSession session) throws Exception
     {
         //验证码
-        String verifyCode = stateCode(session);
-        session.setAttribute("verifyCode", verifyCode);
+        String stateStr = stateCode(session);
+        session.setAttribute("verifyCode", stateStr);
         // 生成PNG发给客户端
         return new AfRestData("");
     }
     
     //显示验证码
     @GetMapping("/show")
-    public void show(HttpSession session,  HttpServletResponse response) throws Exception
+    public void show(HttpSession session, HttpServletResponse response) throws Exception
     {
     	//验证码
         String verifyCode = (String) session.getAttribute("verifyCode");
-        // 生成PNG发给客户端，生成伪静态图片
+        // 生成PNG发给客户端
         response.setContentType("image/png");
         response.setHeader("Cache-Control", "no-cache");
         VerifyPng v = new VerifyPng();

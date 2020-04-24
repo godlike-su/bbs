@@ -10,6 +10,7 @@
 		<script th:src="@{/js/afquery.js}" ></script>
 		<link rel="stylesheet" th:href="@{/css/common.css}" href="../../css/common.css" />
 		<link rel="stylesheet" th:href="@{/css/user.css}" href="../../css/user.css" />
+		
 
 		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
 		<style>
@@ -23,15 +24,32 @@
 		<!--头部-->
 		<div th:replace="~{common::header}"></div>
 		
+		
 		<div class='main'>
-			<div class='head'>
+			<!-- <div class='head'>
 				我的论坛</a> | 用户注册
+			</div> -->
+			<div class="head" style="border: 0;">
+				<svg viewBox="0 0 1000 300">
+				  <symbol id="line-text">
+					<text text-anchor="middle" x="50%" y="50%" dy=".4em">
+					  我的论坛|用户注册
+					</text>
+				  </symbol>
+			
+				  <use xlink:href="#line-text" class="text"></use>
+				  <use xlink:href="#line-text" class="text"></use>
+				  <use xlink:href="#line-text" class="text"></use>
+				  <use xlink:href="#line-text" class="text"></use>
+				</svg>
 			</div>
+			
 			
 			<div class='form' >
 				<div class='row'>
 					<span class='label'> 账号 </span>
-					<input class='id' type='text'  oninput = "value=value.replace(/[^\d]/g,'')" >
+					<input class='id' type='text'  oninput = "value=value.replace(/[^\d]/g,'')"
+						   placeholder="账号非必填项">
 				</div >
 
 				<div class='row'>
@@ -139,8 +157,8 @@
 			}
 
 			Af.rest('[[@{/register.do}]]'  , req, function(data){
-				alert('注册成功');
-				location.href = '[[@{/login}]]' ;  // 跳到登录页
+				alert('注册成功，您的账号是' + data);
+                location.href = '[[@{/prompt}]]/' + data ;  // 跳到登录页
 			},function (error, reason) {
                 alert(reason);
                 my.refState();

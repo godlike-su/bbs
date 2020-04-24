@@ -14,7 +14,7 @@
 	  <!-- 基本改这里就可以了 -->
       <dataSource type="POOLED">
         <property name="driver" value="com.mysql.jdbc.Driver"/>
-        <property name="url" value="jdbc:mysql://127.0.0.1:3306/af_bbs?useUnicode=true&amp;characterEncoding=UTF-8"/>
+        <property name="url" value="jdbc:mysql://127.0.0.1/af_bbs?useUnicode=true&amp;characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
         <property name="password" value="a1b2c3"/>
       </dataSource>
@@ -28,5 +28,9 @@
   	<mapper resource="mybatis-mapper-user.xml"/>
     <mapper resource="mybatis-mapper-message.xml"/>
     <mapper resource="mybatis-mapper-userAbility.xml"/>
+  <!-- 
+    <mapper resource="mybatis-mapperf.xml"/>
+	<mapper resource="mybatis-mapper-teachers.xml"/>
+	-->
   </mappers>
 </configuration>

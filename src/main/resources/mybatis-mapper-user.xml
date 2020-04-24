@@ -7,10 +7,9 @@
  <mapper namespace="user">
     <!--注册信息-->
      <insert id="insertUser" parameterType="my.app.db.User" useGeneratedKeys="true" keyProperty="id" >
-      INSERT INTO `user`
-        (`id`, `name`, `password`, `sex`, `qqid`, `qq`, `qqFlag`, `qqName`, `email`, `emailFlag`, `phone`, `phoneFlag`, `thumb`, `level`, `vip`, `vipName`, `isAdmin`, `timeCreate`, `timeUpdate`, `timeLogin`)
-  VALUES(#{id}, #{name}, #{password}, #{sex}, #{qqid}, #{qq}, #{qqFlag}, #{qqName}, #{email}, #{emailFlag}, #{phone}, #{phoneFlag}, #{thumb}, #{level}, #{vip}, #{vipName}, #{isAdmin}, #{timeCreate}, #{timeUpdate}, #{timeLogin})
-
+     INSERT INTO `user`
+        (`id`, `name`, `password`, `sex`, `qqid`, `qq`, `qqFlag`, `qqName`, `email`, `emailFlag`, `phone`, `phoneFlag`, `thumb`, `experience`, `level`, `vip`, `vipName`, `isAdmin`, `timeCreate`, `timeUpdate`, `timeLogin`)
+  VALUES(#{id}, #{name}, #{password}, #{sex}, #{qqid}, #{qq}, #{qqFlag}, #{qqName}, #{email}, #{emailFlag}, #{phone}, #{phoneFlag}, #{thumb}, #{experience}, #{level}, #{vip}, #{vipName}, #{isAdmin}, #{timeCreate}, #{timeUpdate}, #{timeLogin})
 
      </insert>
 

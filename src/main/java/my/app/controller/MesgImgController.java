@@ -1,7 +1,6 @@
 package my.app.controller;
 
 import af.spring.AfRestData;
-import af.spring.AfRestError;
 import my.app.db.User;
 import my.app.util.FileStore;
 import my.app.util.MyUtil;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
 import java.util.HashMap;
@@ -21,7 +19,7 @@ import java.util.Map;
 public class MesgImgController
 {
 	// 临时图片的存储位置
-	public static FileStore store 
+	public static FileStore store
 		= new FileStore("c:/bbsfile/tmp/", "/bbsfile/tmp/");
 	
     //上传临时图片
@@ -46,17 +44,19 @@ public class MesgImgController
 //            File tmpFile = TmpFile.getFile(request, tmpName);
             File tmpFile = store.getFile(tmpName);
 
+            if(tmpFile.length() > 1000000)
+                throw new Exception("图片太大!需小于1M!");
+
             //接收上传
             mf.transferTo(tmpFile);
             System.out.println("** file: " + tmpFile.getAbsolutePath());
 
-            if(tmpFile.length() > 1000000)
-                throw new Exception("图片太大!需小于1M!");
+            String tmpUrl = request.getContextPath() + store.getUrl(tmpName);
 
             // 回应给客户端的消息
             result.put("realName", realName);
             result.put("tmpName", tmpName);
-            result.put("tmpUrl", store.getUrl(tmpName));
+            result.put("tmpUrl", tmpUrl);
         }
         return new AfRestData(result);
     }

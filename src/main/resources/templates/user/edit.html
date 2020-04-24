@@ -352,6 +352,8 @@
 					// 显示一条上传记录
 					var data = result.data;
 					$('.thumb').attr('src', data.url);
+					if(data.isOwn)
+					    $('.vcenter').attr('src', data.url);
 				}
 			}
 

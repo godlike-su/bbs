@@ -1,20 +1,23 @@
+
 .main{
 	width: 500px;
 	padding : 10px;
 	
-	margin: 40px auto auto auto;
+	margin: 0px auto auto auto;
 	background-color: #fcfcfc;
 	border-radius: 10px;
+	
 }
 
 .head{
 	position: relative;
+	
 	padding: 2px 2px ;
-	border-bottom: 1px solid #f1f1f1;
-	background-color: #fcfcfc;				
+	border-bottom: 1px solid #f1f1f1;			
 	text-align: center;
 	height: 50px;
-	line-height: 46px;				
+	line-height: 46px;	
+		
 }			
 .head .icon{
 	font-family: '黑体';
@@ -37,6 +40,72 @@ input{
 input.state{
 	width: 250px;
 }
+
+/* 炫酷字体 */
+.head {
+    font-size: 120px;
+    font-weight: bold;
+    text-transform: uppercase;
+    
+  }
+  
+  svg {
+    width: 100%;
+    height: 100%;
+  
+  }
+  
+  .text {
+    fill: none;
+    stroke-width: 5;
+    stroke-dasharray: 0 240;
+    stroke-dashoffset: 0;
+  }
+  
+  .text:nth-child(4n + 1) {
+    stroke: rgb(39, 135, 238);
+    animation: text1 4s ease-in-out forwards;
+  }
+  .text:nth-child(4n + 2) {
+    stroke: rgb(47, 169, 92);
+    animation: text2 4s ease-in-out forwards;
+  }
+  .text:nth-child(4n + 3) {
+    stroke: rgb(249, 189, 56);
+    animation: text3 4s ease-in-out forwards;
+  }
+  .text:nth-child(4n + 4) {
+    stroke: rgb(235, 61, 50);
+    animation: text4 4s ease-in-out forwards;
+  }
+  
+  @keyframes text1 {
+    100% {
+      stroke-dashoffset: 1000;
+      stroke-dasharray: 60 180;
+    }
+  }
+  
+  @keyframes text2 {
+    100% {
+      stroke-dashoffset: 1060;
+      stroke-dasharray: 60 180;
+    }
+  }
+  
+  @keyframes text3 {
+    100% {
+      stroke-dashoffset: 1120;
+      stroke-dasharray: 60 180;
+    }
+  }
+  
+  @keyframes text4 {
+    100% {
+      stroke-dashoffset: 1180;
+      stroke-dasharray: 60 180;
+    }
+  }
 
 
 /* 响应式布局 */

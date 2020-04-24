@@ -1,160 +1,160 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.2.6.RELEASE</version>
-		<relativePath/> <!-- lookup parent from repository -->
-	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>bbs</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>bbs</name>
-	<description>Demo project for Spring Boot</description>
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+    <groupId>com.wb1</groupId>
+    <artifactId>demo</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>demo</name>
+    <description>Demo project for Spring Boot</description>
 
-	<properties>
-		<java.version>1.8</java.version>
-	</properties>
+    <properties>
+        <java.version>1.8</java.version>
+    </properties>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-test</artifactId>
-			<scope>test</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>org.junit.vintage</groupId>
-					<artifactId>junit-vintage-engine</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		
-		<!-- Thumbnailator图片操作 -->
-		<dependency>
-		   <groupId>net.coobird</groupId>
-		   <artifactId>thumbnailator</artifactId>
-		   <version>0.4.8</version>
-		</dependency>
-		
-		<!-- 添加mysql -->
-		<dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <!-- Thumbnailator图片操作 -->
+        <dependency>
+            <groupId>net.coobird</groupId>
+            <artifactId>thumbnailator</artifactId>
+            <version>0.4.8</version>
+        </dependency>
+
+        <!-- 添加mysql -->
+        <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.6</version>
         </dependency>
-		
-		<!-- 添加本地mysql 
+
+        <!-- 添加本地mysql
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.7</version>
             <scope>system</scope>
-			<systemPath>${project.basedir}/libs/mysql-connector-java-5.1.7-bin.jar</systemPath>
+            <systemPath>${project.basedir}/libs/mysql-connector-java-5.1.7-bin.jar</systemPath>
         </dependency>
-		-->
-		
-		<!-- Mybatis -->
-		<dependency>
-		  <groupId>org.mybatis</groupId>
-		  <artifactId>mybatis</artifactId>
-		  <version>3.5.2</version>
-		</dependency>
-		
-		<!-- 添加 FastJSON依赖 -->
-		<dependency>
-			<groupId>com.alibaba</groupId>
-			<artifactId>fastjson</artifactId>
-			<version>1.2.59</version>
-		</dependency>
-		
-		<!-- 添加 QQ登录依赖 -->
-		<dependency>
-			<groupId>net.gplatform</groupId>
-			<artifactId>Sdk4J</artifactId>
-			<version>2.0</version>
-		</dependency>
-		
-		<!-- http依赖 -->
-		<!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+        -->
+
+        <!-- Mybatis -->
         <dependency>
-	            <groupId>org.apache.httpcomponents</groupId>
-	            <artifactId>httpcore</artifactId>
-	            <version>4.4.11</version>
-	        </dependency>
-	
-	        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
-	        <dependency>
-	            <groupId>org.apache.httpcomponents</groupId>
-	            <artifactId>httpclient</artifactId>
-	            <version>4.5.8</version>
-	        </dependency>
-	        
-	        <dependency>
-	            <groupId>org.apache.httpcomponents</groupId>
-	            <artifactId>httpmime</artifactId>
-	            <version>4.5.8</version>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>3.5.2</version>
         </dependency>
-	        
+
+        <!-- 添加 FastJSON依赖 -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.59</version>
+        </dependency>
+
+        <!-- 添加 QQ登录依赖 -->
+        <dependency>
+            <groupId>net.gplatform</groupId>
+            <artifactId>Sdk4J</artifactId>
+            <version>2.0</version>
+        </dependency>
+
+        <!-- http依赖 -->
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpcore</artifactId>
+            <version>4.4.11</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.8</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpmime</artifactId>
+            <version>4.5.8</version>
+        </dependency>
+
         <!-- apache.commons依赖 -->
         <!-- org.apache.commons.io -->
-		<dependency>
-			    <groupId>commons-io</groupId>
-			    <artifactId>commons-io</artifactId>
-			    <version>2.4</version>
-			</dependency>
-			
-			<!-- 添加org.apache.commons.logging -->
-			<dependency>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-				<version>1.2</version>
-			</dependency>
-	        
-	        <!-- Hex commons-codec-1.12.jar -->
-			<dependency>
-				<groupId>commons-codec</groupId>
-				<artifactId>commons-codec</artifactId>
-				<version>1.14</version>
-		</dependency>
-		
-		<!-- 添加本地org.apache.commons.logging -->
-		<!--  
-		<dependency>
-			<groupId>org.apache.commons.logging</groupId>
-			<artifactId>commons-logging</artifactId>
-			<version>1.1.3</version>
-			<scope>system</scope>
-			<systemPath>${project.basedir}/libs/commons-logging-1.1.3.jar</systemPath>
-		</dependency>
-		-->
-	</dependencies>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
+        </dependency>
 
-	<build>
-		<plugins>
-		<!-- -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				
-				<!-- 打JAR包时要求包含本地库 -->
-				<!--  
-				<configuration>
-					<includeSystemScope>true</includeSystemScope>
-				</configuration>
-				-->
-			</plugin>
-		</plugins>
-	</build>
+        <!-- 添加org.apache.commons.logging -->
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.2</version>
+        </dependency>
+
+        <!-- Hex commons-codec-1.12.jar -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.14</version>
+        </dependency>
+
+        <!-- 添加本地org.apache.commons.logging -->
+        <!--
+        <dependency>
+            <groupId>org.apache.commons.logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <version>1.1.3</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/commons-logging-1.1.3.jar</systemPath>
+        </dependency>
+        -->
+    </dependencies>
+
+    <build>
+        <plugins>
+            <!-- -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+
+                <!-- 打JAR包时要求包含本地库 -->
+                <!--
+                <configuration>
+                    <includeSystemScope>true</includeSystemScope>
+                </configuration>
+                -->
+            </plugin>
+        </plugins>
+    </build>
 
 </project>
