@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>我的论坛</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+				
+		<script th:src="@{/js/jquery.min.js}" src="../../js/jquery.min.js"></script>
+		<script th:src="@{/js/afquery.js}" src="../../js/afquery.js"></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" href="../../css/common.css"/>
+		<link rel="stylesheet" th:href="@{/css/list.css}"  href="../../css/list.css"/>
+		<style>
+
+
+			
+		</style>
+	</head>
+	<body>
+		<div class="main container" style="min-height: 300px;">
+
+			<!--头部-->
+			<div th:replace="~{common::header}"></div>
+
+			<!--如未登录，则提示登录-->
+			<div class="pad" style="padding: 10px;">
+				<div th:if="${session.user==null}">
+					请先 <a href="javascript:void(0)" onclick="pleaseLogin()">登录</a>之后才能发表帖子
+				</div>
+				<div th:if="${session.user!=null}">
+					<img src="../../img/message.png" th:src="@{/img/message.png}"  style="width: 16px;transform: translateY(2px);"/>
+					<a th:if="${session.userAbility.msgCount>0}" th:href="@{/u/message/add}">发表帖子</a>
+					<a th:if="${session.userAbility.msgCount<=0}" href="javaScript:void(0)"  style="cursor:not-allowed;background-color: gray;" title="今天发帖数已上限">发表帖子</a>
+					<img src="../../img/message.png" th:src="@{/img/nice.png}"  style="width: 16px;transform: translateY(2px);padding-left: 8px;"/>
+					<a href="" th:href="@{/message/list(niceFlag=1)}">精华帖</a>
+					<a th:if="${session.user!=null && session.user.isAdmin!=null && session.user.isAdmin}" 
+					href="" th:href="@{/u/user/list}" style="padding-left: 10px;">所有用户信息</a>
+				</div>
+				<div th:if="${session.user==null}">
+					<a href="" th:href="@{/message/list(niceFlag=1)}">精华帖</a>
+				</div>
+				<script>
+					window.pleaseLogin = function(){
+						location.href = '[[@{/login}]]' + '?returnUrl=' + location.href;
+					}
+				</script>
+			</div>
+			
+			<div class="list" style="position: relative">
+				<div class="topbar">
+					<span class="label" style="vertical-align: middle;">帖子列表</span>
+				</div>
+
+				<!--模糊查询-->
+				<div style="position: absolute; right: 0px; top:0; padding: 10px;">
+					<div class="search">
+						<input class="filter" type="text" placeholder="按名称查询"
+							   th:text=${filter}
+							   onkeydown='if(event.keyCode==13)my.search();' />
+
+						<img class="clearbtn" src="../../img/clear.png" th:src="@{/img/clear.png}"
+							 onclick="$('.filter').val(''); my.search()"
+							 title="清除" />
+
+						<img class="okbtn" src="../../img/search.png" th:src="@{/img/search.png}"
+							 onclick='my.search()'
+							 title = '查询'/>
+					</div>
+				</div>
+
+				<div class='item' th:each=" row , state: ${messageList} ">
+					<div >
+						<!--回复数+等级+会员-->
+						<div class='c1'>
+							<span class='replycount' title="回复数">[[${row.numReply}]]</span>
+							<br>
+							<span th:if="${row.level}>0" style="background-color: yellow; color: red; min-width: 30px;height: 15px;
+							text-align: center; border-radius: 10px; font-size: 5px;">LV[[${row.level}]]</span>
+							<br>
+							<span th:if="${row.vip}>0" style="background-color: red; color: yellow; min-width: 30px;height: 15px;
+							text-align: center; border-radius: 10px; font-size: 5px;">Vip[[${row.vip}]]</span>
+						</div>
+
+						<!--帖子标题+置顶？加精？+回复内容提示-->
+						<div class='c2' >
+							<!-- 置顶的帖子 -->
+							<div th:if="${row.topFlag>0}">
+								<img th:src='@{/img/top.png}'  style='width:14px' title="置顶">
+								<a class='wrap' style='font-weight: bold;color:#111'
+										th:text="${row.title}" th:href='@{/reply/list(msgId=${row.id})}'>标题</a>	
+							</div>
+							
+							<!-- 不是置顶的帖子 -->
+							<div th:if='${row.topFlag==0}'>
+								<!-- 加精的帖子 -->
+								<img th:if='${row.niceFlag>0}'
+												th:src='@{/img/nice.png}' style='width:14px' title="加精">
+								<a class='wrap' th:text="${row.title}" th:href='@{/reply/list(msgId=${row.id})}'>标题</a>
+							</div>
+							
+							<!--文章内容提示-->
+							<div class='wrap' style='font-size:13px;color:#444;margin-top:6px'>
+								[[${row.replyText}]]
+							</div>
+						</div>
+
+						<!-- 帖子楼主+回复人 -->
+						<div class='c3' >
+							<div>
+								<img th:src='@{/img/user2.png}' src="../../img/user2.png" style='width:12px'  title="楼主";>
+								<span th:if="${row.vipName!=null && row.vipName!='非会员' && row.vip>0}" style="color: red;">[[${#strings.abbreviate(row.userName,12)}]]</span>
+								<span th:if="${row.vipName==null || row.vipName=='非会员' || row.vip<=0}" >[[${#strings.abbreviate(row.userName,12)}]]</span>
+							</div>
+							<div style='font-size:12px;color:#444;margin-top:12px'>
+								<img th:src='@{/img/message.png}' src="../../img/message.png" style='width:12px'  title="最新回复人">
+								<span>[[${#strings.abbreviate(row.replyName,12)}]]</span>
+							</div>
+						</div>
+
+						<!-- 帖子更新时间 -->
+						<div class='c4'>
+							<span title="更新时间">[[${row.replyTime}]]</span>
+						</div>
+					</div>
+				</div>
+
+
+				<div class='bottombar'>
+					<div class='page-index-bar' style='margin:0px' ></div>
+				</div>	
+			</div>
+			<br /><br />
+		</div>
+		<div th:insert="~{common::footer}"></div>
+	</body>
+	
+	<script>
+		var my = {};
+			
+		var pageCount = [[${pageCount}]];
+		var pageNumber = [[${pageNumber}]];
+		var serviceUri = '[[@{/message/list}]]' ; // 当前查询的URI
+		var niceFlag = [[${niceFlag}]];
+        var count = [[${count}]];
+
+        //输入当前页，返回url路径
+        my.pageUrl = function(pageNumber){
+            var url = '[[@{/message/list}]]';
+			url += '?pageNumber=' + pageNumber + '&niceFlag=' + niceFlag;
+
+            // http://127.0.0.1:8080/book/list?pageNumber=1&filter=%E6%A0%A1%E8%8A%B1&niceFlag=0
+            var filter = $('.filter').val().trim();
+            if(filter.length > 0)
+                url += '&filter=' + encodeURIComponent(filter);
+            return url;
+        }
+
+		// 初始化执行: 分页显示
+		my.initPage = function(){
+			var str = "";			
+		
+			var skipped = false;
+			for(var i=1; i<=pageCount; i++)
+			{
+				// 如果页面数过多，则添加一个省略号
+				if(i< pageNumber - 2 && i >= 2)
+				{
+					if(!skipped ) str += "...";
+					skipped = true;
+					continue;
+				}
+				if(i> pageNumber + 2 && i <= pageCount - 1)
+				{
+					if(!skipped ) str += "...";
+					skipped = true;
+					continue;
+				}
+				skipped = false;
+				
+				// 当前页码： 以高亮显示
+				if(i == pageNumber)
+					str += "<label class='page static'> ##1 </label>".replace(/##1/g, i);
+				else
+					str += "<a class='page' href='##2'> ##1 </a>"
+                        .replace(/##1/g, i)
+						.replace(/##2/g, my.pageUrl(i));
+
+		
+				$('.page-index-bar').html(str);	
+			}
+		}(); // 立即执行 my.initPage()
+
+        // 条件查询
+        my.search = function(){
+            location.href = my.pageUrl (1);
+        }
+
+	</script>
+</html>

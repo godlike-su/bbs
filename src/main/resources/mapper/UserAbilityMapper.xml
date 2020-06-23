@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  
+ <mapper namespace="my.app.mapper.UserAbilityMapper">
+     <select id="selectOne" resultType="my.app.entity.UserAbility">
+         SELECT * FROM user_ability WHERE userId=#{id}
+     </select>
+
+    <update id="useCount" parameterType="my.app.entity.UserAbility">
+        update user_ability
+        <trim prefix="set" suffixOverrides=",">
+            <if test="imageCount!=null">
+                imageCount = imageCount-1,
+            </if>
+            <if test="replyCount!=null">
+                replyCount=replyCount-1,
+            </if>
+            <if test="msgCount!=null">
+                msgCount=msgCount-1,
+            </if>
+        </trim>
+        where userId=#{userId}
+     </update>
+    
+    <insert id="insertInit" parameterType="my.app.entity.UserAbility">
+        INSERT INTO `user_ability`
+        (`userId`, `banFlag`, `banDate`, `imageCount`, `imageMax`, `msgCount`, `msgMax`, `replyCount`, `replyMax`)
+          VALUES(#{userId}, #{banFlag}, #{banDate}, #{imageCount}, #{imageMax}, #{msgCount}, #{msgMax}, #{replyCount}, #{replyMax})
+    </insert>
+
+    <!--权力恢复-->
+    <update id="RestoreTask" parameterType="hashmap">
+        update user_ability set  imageCount=imageMax , msgCount=msgMax, replyCount=replyMax
+    </update>
+
+    <update id="setAbilityMax" parameterType="my.app.entity.UserAbility">
+        update user_ability
+        <trim prefix="set" suffixOverrides=",">
+            <if test="imageMax!=null">
+                imageMax = #{imageMax}, imageCount = #{imageMax},
+            </if>
+            <if test="replyMax!=null">
+                replyMax=#{replyMax}, replyCount = #{replyMax},
+            </if>
+            <if test="msgMax!=null">
+                msgMax=#{msgMax}, msgCount = #{msgMax},
+            </if>
+        </trim>
+        where userId=#{userId}
+    </update>
+
+ </mapper>

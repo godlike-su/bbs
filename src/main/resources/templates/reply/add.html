@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>发帖</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		
+		<script src="../../js/jquery.min.js" th:src="@{/js/jquery.min.js}" ></script>
+		<script src="../../js/afquery.js" th:src="@{/js/afquery.js}" ></script>
+		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
+		<link rel="stylesheet" href="../../css/common.css" th:href="@{/css/common.css}" />
+		
+		<style>
+			body{
+				background-color: #F6F7FB;
+			}
+			
+			/* 编辑区 */
+			.edit{
+				border:1px solid #ccc;
+			}
+			.edit .title{
+				box-sizing: border-box;
+				width:100%;
+				border-radius: 0px;
+				border: 0px solid #fff;
+				border-bottom: 1px dotted #ccc;
+				padding:10px 6px;
+				font-size:13px;
+				color: #333;
+			}
+			.edit .content{
+				border-radius: 0px;
+				box-sizing: border-box;
+				border: 0px solid #fff;
+				width:100%;
+				height: 200px;
+				padding:6px;
+				font-size:13px;
+				color: #333;
+				line-height: 150%;
+				tab-size: 3;
+			}
+					
+			.edit:hover{
+				border-color: #4285F4;
+			}
+			.wrong{
+				padding: 40px;
+				min-height: 300px;
+				position: relative;
+				text-align: center;				
+			}
+			.wrong div{
+				font-size: 14px;
+				margin-top: 16px;
+			}
+			.wrong img.icon{
+				width: 80px;
+			}	
+			
+		</style>
+	</head>
+	<body>
+
+		<div class='container'>
+			
+			<!--头部-->
+			<div th:replace="~{common::header}"></div>
+			
+			<div class='pad' style='padding:10px;border-bottom:1px solid #f4f4f4'>
+				<a th:href='@{/reply/list(msgId=${ref.id})}' >
+					<img th:src='@{/img/back.png}' style='width:16px;transform:translateY(4px)'> 返回原帖
+				</a>		
+			</div>
+		</div>
+		
+		<div class='main container pad' style='padding:10px'>	
+			
+			<div class='row'>
+				<span class='label'> 原帖: </span>
+				<pre th:text='${ref.title}'></pre>
+			</div>
+			
+			<div class='form '>
+				<span class='label'> 回复: </span><br>
+				<div class='edit'>
+					<textarea class='content' placeholder='内容10字以上'></textarea>
+				</div>				
+			</div>
+				
+			<div class='row '>
+				<button th:if="${session.userAbility.replyCount!=0}" class='primary' onclick='my.save()'> 发表回复 </button> &nbsp;
+				<button th:if="${session.userAbility.replyCount==0}" class='primary' style="cursor:not-allowed;background-color: gray;" title="今天回复数已上限"> 发表回复 </button> &nbsp;
+			</div>
+				
+		</div>
+		
+		<div th:insert="~{common::footer}"></div>
+	</body>
+	
+	<script>
+		var my = {};
+		my.msgId = [[${ref.id}]];
+		my.msgId2 = [[${msgId2}]];
+		var t = 0; 		//防止误点2次操作
+		
+		my.save = function(){
+		    if(t==1){
+                layer.msg('回复成功', {
+                    time: 1000,
+                    end: function(){
+                        location.href='[[@{/reply/list}]]' + '?msgId=' + my.msgId;
+                    }
+                })
+				return;
+			};
+		    t=1;	//每次只能回复一次
+			var req = {};
+			req.msgId = my.msgId;
+			req.msgId2 = my.msgId2;
+			req.title = "";
+			req.content = $('.edit .content').val();
+			if( $('.content').val().trim().length < 3){
+				alert('需输入10字符以上');
+				t=0;
+				return;
+			}
+			if(req.title.length==0)
+			{
+				// 从正文里提取前30字作为标题
+				req.title = req.content.substring(0,30);
+				req.title = req.title.replace(/\\n/g, ''); // 去掉\n的换行符
+			}		
+			
+			Af.rest('[[@{/u/reply/save.do}]]' , req , function(data){
+				layer.msg('回复成功', {
+                    time: 1000,
+                    end: function(){
+                        location.href='[[@{/reply/list}]]' + '?msgId=' + my.msgId;
+                    }
+                })
+			})
+		}
+		
+	
+	</script>
+	
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title> 我的论坛 </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" />
+		
+		<script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script>
+		<style>
+			
+			.main{
+				margin: 40px auto auto auto;
+				background-color: #fcfcfc;
+				border-radius: 10px;
+				padding: 10px;
+			}
+			
+			.head{
+				position: relative;
+				padding: 2px 2px ;
+				border-bottom: 1px solid #f1f1f1;
+				background-color: #fcfcfc;				
+				text-align: center;
+				height: 50px;
+				line-height: 46px;				
+			}	
+			
+			.label{
+				display: inline-block;
+				width: 100px;
+				text-align: right;
+			}
+			
+			.profile{
+				width:100%;
+				border-color:#f1f1f1;
+			}
+			.profile .c1{
+				width: 100px;
+				padding: 10px;	
+				color:#888;
+				text-align: right;
+			}
+			.profile .c2{
+				padding: 10px 0 10px 30px;
+				background-color: #fff;
+				text-align: left;
+			}
+			
+			/* 头像 */
+			.thumbbox{
+				display: inline-block;
+				margin: 10px 10px 10px 0px;
+				position: relative;
+				border: 1px dotted #ccc;
+				border-radius: 1px;
+				width: 80px;
+				height: 80px;
+				background-color: #fcfcfc;
+			}
+			.thumbbox .thumb{
+				width:100%;
+				height:100%;
+				cursor: pointer;
+			}
+			
+			.exit{
+				display: inline-block;
+				background-color: #fd4d25;
+				color: #fff;
+				padding:10px;
+				margin: 2px;
+				border-radius: 4px;
+			}
+			
+		</style>
+		
+	</head>
+	<body>
+		<!--头部-->
+		<div th:replace=" ~{common::header}"></div>
+		
+		<div class="container">
+			<div class="main">
+				<div class="head">
+					<img src="../../img/edit.png" th:src="@{/img/edit.png}" style="width: 14px;" /> &nbsp;
+					用户资料
+				</div>
+				<a href="#" onclick="javascript:history.back(-1);" style="float: left;" title="上一页">
+					<img th:src="@{/img/up.png}"></a>
+				
+				<table class="profile">
+					<tr>
+						<td class="c1">用户ID</td>
+						<td char="c2">
+							<span th:text="${user.id}" class="id"></span>
+							
+							
+						</td>
+					</tr>
+					<tr>
+						<td class="c1">昵称</td>
+						<td char="c2">
+							<a class="name" 
+							href="javascript:void(0)" onclick="my.setUser(this, 'setName', 'reload')"> [[${user.name}]]</a>
+						</td>
+					</tr>
+					<tr>
+						<td class="c1">性别</td>
+						<td char="c2">
+							<a class="sex"
+							   href="javascript:void(0)" onclick="my.setSex(this, 'setSex', 'reload')"> [[${user.sex}?'女':'男']]</a>
+						</td>
+					</tr>
+					<tr>
+						<td class="c1">等级</td>
+						<td char="c2">
+							<label class="level"
+							> [[${user.level}]]</label>
+						</td>
+					</tr>
+					<tr>
+						<td class="c1">经验</td>
+						<td char="c2">
+							<progress th:if="${user.experience<10 and user.experience>=0}" th:value='${user.experience}' max='10' th:title="${user.experience} + '/10'"></progress>
+							<progress th:if="${user.experience<100 and user.experience>=10}" th:value='${user.experience}' max='100' th:title="${user.experience} + '/100'"></progress>
+							<progress th:if="${user.experience<1000 and user.experience>=100}" th:value='${user.experience}' max='1000' th:title="${user.experience} + '/1000'"></progress>
+							<progress th:if="${user.experience<10000 and user.experience>=1000}" th:value='${user.experience}' max='10000' th:title="${user.experience} + '/10000'"></progress>
+							<progress th:if="${user.experience<100000 and user.experience>=10000}" th:value='${user.experience}' max='100000' th:title="${user.experience} + '/100000'"></progress>
+							<progress th:if="${user.experience>=100000}" th:value='100000' max='100000' th:title="max"></progress>
+							<br>
+							<span style="font-size: 5px;">[[${user.experience}]]</span>
+						</td>
+					</tr>
+					<tr>
+						<td class='c1'> 安全: </td>
+						<td class='c2'>
+                            <a class="password"
+                               href="javascript:void(0)" onclick="my.setUser(this, 'setPassword', 'reload')"> [[${user.password}]]</a>
+                        </td>
+					</tr>
+					<!--会员变色-->
+					<tr>
+						<td class='c1'> 会员等级: </td>
+						<td char='c2'>
+							<a th:text="${user.vip}" style="color: red" class="vip"
+							href="javascript:void(0)" onclick="my.setUser(this, 'setVip', 'reload')">vip</a>
+						</td>
+					</tr>
+					<tr>
+						<td class='c1'> 会员称号: </td>
+						<td char='c2'>
+							<a th:text="${user.vipName}" style="color: red" class="vipName"
+							href="javascript:void(0)" onclick="my.setUser(this, 'setvipName', 'reload')">vipName</a>
+						</td>
+					</tr>
+
+					<tr>
+						<td class='c1'> 头像: </td>
+						<td class='c2' >
+							<input class='hidden upload' type='file' onchange='my.selectFileOK(this)'/>	
+							<div class='thumbbox' th:switch="${user.thumb==null}">
+								<img class='thumb' th:case="true"  th:src="@{/img/user.jpg}" onclick='my.thumbClick(this)'/>
+								<img class='thumb' th:case="false"  th:src="@{${user.thumb}}" onclick='my.thumbClick(this)'/>
+							</div>
+						</td>
+					</tr>
+					
+					<tr>
+						<td class='c1'> 发文限制: </td>
+						<td class='c2'>
+							今天剩余 [[${userAbility.msgCount}]] 次
+						</td>
+					</tr>
+					<tr>
+						<td class='c1'> 图片限制: </td>
+						<td class='c2'>
+							今天剩余 [[${userAbility.imageCount}]] 次
+						</td>
+					</tr>
+					<tr>
+						<td class='c1'> 回复限制: </td>
+						<td class='c2'>
+							今天剩余 [[${userAbility.replyCount}]] 次
+						</td>
+					</tr>
+
+				</table>
+				
+			</div>
+			
+		</div>
+		
+		<!--输入框-->
+		<div th:insert=" ~{dialog::set_text_dialog}"></div>
+		<!--性别输入框-->
+		<div th:insert=" ~{dialog::sex_text_dialog}"></div>
+
+
+	</body>
+	
+	<script>
+		var my = {};
+		my.id = $('.id').html();
+		
+		my.setName = function(){
+			var req = {};
+			req.name = $('.name').val().trim();
+			if(req.name.length==0){
+				alert('请输入名字'); return;
+			}
+			
+			Af.rest('[[@{u/prefile/setName.do}]]', req, function(data){
+				alert('操作成功');
+				location.reload();
+			})
+		}
+		
+		
+		my.setPassword2 = function(password){
+			var req = {};
+			req.password = password;
+			Af.rest('[[@{/u/profile/password.do}]]', req, function(data){
+				layer.msg('成功',{
+					time: 500,
+					end: function(){
+						location.href = '[[@{/logout}]]' ;
+					}
+				})
+			})
+		}
+		
+		my.setUser = function(dom, cmd, action){
+			// layer对话框
+			layer.open({
+				type: 1,
+				title: cmd,
+				area: ['400px', 'auto'],
+				content: $('.set_text_dialog_define').html(),
+				btn: ['确定','取消'],
+				btn1: function(index, layero){
+					var value = $('.value', layero).val().trim();
+					my.suSetUser(dom, cmd, action, value);
+					layer.close(index);
+				},
+				success: function(layero, index){
+					// 对话框界面的初始化
+					$('.label', layero).html(cmd+':');
+                    this.enterConfirm = function(event){
+                        if(event.keyCode === 13){
+                            console.log("btn:"+$(".layui-layer-btn0").text());
+                            $(".layui-layer-btn0").click();
+                            //$(".layui-layer-btn0").trigger("click");
+                            //return false; //阻止系统默认回车事件
+                        }
+                    };
+                    $(document).on('keydown', this.enterConfirm); //监听键盘事件
+				}
+			});
+		}
+
+		//设置性别
+        my.setSex = function(dom, cmd, action){
+            // layer对话框
+            layer.open({
+                type: 1,
+                title: cmd,
+                area: ['400px', 'auto'],
+                content: $('.sex_text_dialog_define').html(),
+                btn: ['确定','取消'],
+                btn1: function(index, layero){
+                    var value = $('.value', layero).val().trim();
+                    my.suSetUser(dom, cmd, action, value);
+                    layer.close(index);
+                },
+                success: function(layero, index){
+                    // 对话框界面的初始化
+                    $('.label', layero).html(cmd+':');
+                    this.enterConfirm = function(event){
+                        if(event.keyCode === 13){
+                            console.log("btn:"+$(".layui-layer-btn0").text());
+                            $(".layui-layer-btn0").click();
+                            //$(".layui-layer-btn0").trigger("click");
+                            //return false; //阻止系统默认回车事件
+                        }
+                    };
+                    $(document).on('keydown', this.enterConfirm); //监听键盘事件
+                }
+            });
+        }
+		
+		// 管理操作: 修改用户
+		my.suSetUser = function(dom, cmd, action, value){
+			var promptText = $(dom).text();
+			if(!confirm('确认操作：' + promptText + '?')) return;
+			
+			// var rowid = Number( $(dom).parent().attr('rowid') );
+			var req = {};
+			req.value = value;
+			req.cmd = cmd;
+			req.id = Number($('.id').html());
+			req.name = $('.name').html().trim();
+			req.vip = Number($('.vip').html());
+			req.vipName = $('.vipName').html().trim();
+            if(value.length==0){
+                alert('字段不能为空'); return;
+            }
+			Af.rest('[[@{/u/admin/setUser.do}]]', req, function(data){
+				if(action=='back') location.href='[[@{/message/list}]]' ;  // 仅仅返回还不够,还得刷新一下
+				if(action=='reload')	location.reload();
+			})
+		}
+		
+		/* 头像上传 */
+		my.thumbClick = function(dom){
+			$('.upload').click(); // 模拟点击file控件
+			$('.upload')[0].target = dom; // dom指的是 <img>控件 
+		}
+		
+		my.selectFileOK = function(button){
+			var file = button.files[0];	
+			button.value = '' ; // 清除file button的选择
+			var thumb = button.target; // <img>控件
+			
+			//后缀检查
+			var type = file.type;
+			if(type!='image/jpeg' && type!= 'image/png'){ alert('不支持的类型' + type); return }
+			if(file.size > 500*1000){ alert('图片太大,不得大于500KB!')}
+			
+			/* 开始上传 */
+			var uploader = new AfUploader();
+			uploader.uploadUrl = '[[@{/u/admin/setPhoto.do}]]';   // 服务URL
+			uploader.file = file;	//文件对象
+			uploader.args = {}; // 可以附加额外的参数
+			uploader.args.id = $('.id').html();
+			// uploader.args = {	'your_args': 'arg_value' };
+			
+			uploader.startUpload();		
+			// 上传完成事件处理
+			uploader.processEvent = function(event){
+				if(event=='complete')
+				{
+					var result = JSON.parse(this.response);
+					if(result.error != 0){
+						alert(result.reason);  return; // 不允许上传
+					}
+					
+					// 显示一条上传记录
+					var data = result.data;
+					$('.thumb').attr('src', data.url);
+					if(data.isOwn)
+					    $('.vcenter').attr('src', data.url);
+				}
+			}
+
+		}
+		
+		
+		
+	</script>
+</html>

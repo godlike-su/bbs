@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<!--更改密码对话框-->
+		<div th:fragment='simple_text_dialog' >
+			<div class="simple_text_dialog_define" style="display: none;" >
+					<div class="pane" style="padding:16px">
+						<div style="padding: 6px;">
+							<label class="label" style="width: 20%;">原密码:</label>
+							<input class="input password" type="password" style="width: 70%;" />
+						</div>
+						<div style="padding: 6px;">
+							<label class="label" style="width: 20%;">新密码:</label>
+							<input class="input password2" type="password" style="width: 70%;" />
+						</div>
+					</div>
+			</div>
+		</div>
+
+		<!--更改其他信息对话框-->
+		<div th:fragment='set_text_dialog' >
+			<div class="set_text_dialog_define" style="display: none;" >
+				<div class="pane2" style="padding:16px">
+					<div style="padding: 6px;">
+						<label class="label" style="width: 30%;">原文:</label>
+						<input class="input value" type="text"  style="width: 60%;" />
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!--更改性别对话框-->
+		<div th:fragment='sex_text_dialog' >
+			<div class="sex_text_dialog_define" style="display: none;" >
+				<div class="pane2" style="padding:16px">
+					<div style="padding: 6px;">
+						<label class="label" style="width: 30%;">性别:</label>
+						<select class="input value">
+							<option value="0">男</option>
+							<option value="1">女</option>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 图片放大显示对话框 -->
+		<div th:fragment='image_zoom_dialog'>
+			<div class='image_zoom_dialog_define' style='display:none'>			
+				<img style='cursor:zoom-out' onclick='image_zoom_dialog.close()'>
+			</div>	
+			<script>
+				var image_zoom_dialog = {};
+				image_zoom_dialog.exec = function(imgurl){
+					$('.image_zoom_dialog_define img').attr('src', imgurl);
+					this.index = layer.open({
+						type: 1,
+						title: false,
+						closeBtn: 0,
+						area: ['auto'],
+						skin: 'layui-layer-nobg', //没有背景色
+						shadeClose: true,
+						content: $('.image_zoom_dialog_define')
+					});					
+				}	
+				image_zoom_dialog.close = function(){
+					layer.close(this.index);
+				}
+			</script>
+		</div>
+	</body>
+</html>

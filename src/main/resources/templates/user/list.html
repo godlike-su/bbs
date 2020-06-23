@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title> 我的论坛 </title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+		
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" />
+		
+
+		<!-- <script src="../../layer/layer.js" th:src="@{/layer/layer.js}"></script> -->
+		<script th:src="@{/layer/layui.js}"></script>
+		<link rel="stylesheet" th:href="@{/layer/css/layui.css}" />
+		<style>
+			
+			.main{
+				margin: 40px auto auto auto;
+				background-color: #fcfcfc;
+				border-radius: 10px;
+				padding: 10px;
+			}
+			
+			.head{
+				position: relative;
+				padding: 2px 2px ;
+				border-bottom: 1px solid #f1f1f1;
+				background-color: #fcfcfc;				
+				text-align: left;
+				height: 50px;
+				line-height: 46px;				
+			}	
+			
+			.label{
+				display: inline-block;
+				width: 100px;
+				text-align: right;
+			}
+			<!--表格-->
+			.profile{
+				width:100%;
+				border-color:#f1f1f1;
+			}
+			r
+			.profile .c2{
+				width: 100px;
+				padding: 10px 0 10px 30px;
+				background-color: #fff;
+				text-align: left;
+			}
+
+			
+		</style>
+		<script>
+			var serviceUri = '[[@{/u/user/listInfo}]]' ; // 当前查询的URI
+		</script>
+		
+	</head>
+	<body>
+		<!--头部-->
+		<div th:replace=" ~{common::header}"></div>
+		
+		<div class="container">
+			<div class="main">
+				<div class="head">
+					<img src="../../img/edit.png" th:src="@{/img/edit.png}" style="width: 14px;" /> &nbsp;
+					所有用户资料
+				</div>
+
+				<!--原始表格-->
+				<table id="demo" lay-filter="test" lay-data="{id: 'idTest'}"></table>
+
+				<div style="display: none" id="tableSearch" lay-filter="tableSearch">
+					<div class="search">
+<!--						<input class="filter" type="text" placeholder="按昵称查询" lay-event="add"-->
+<!--							   th:text=${filter}  />-->
+						<div class="layui-input-inline">
+							<input type="text" name="title" required  lay-verify="required"
+								   placeholder="按昵称查询" autocomplete="off" class="filter layui-input">
+						</div>
+
+						<button class="layui-icon layui-icon-close" lay-event="delete"></button>
+						<button class="layui-icon layui-icon-search" lay-event="search"></button>
+					</div>
+				</div>
+
+				<script  th:inline="none">
+
+				layui.use('table', function(){
+				  var table = layui.table;
+				  //第一个实例
+					var tableIns = table.render({
+				      elem: '#demo'
+				      ,height: 535
+				      ,url: serviceUri //数据接口
+					  ,toolbar: '#tableSearch'
+					  ,defaultToolbar: ['filter', 'print', 'exports']
+					  ,where: {filter: ''}
+					  ,parseData: function(res){
+						  return{
+							  "code": res.error,
+							  "msg": res.reason,
+							  "data": res.data.userList,
+							  "count": res.data.count,
+							  "filter": res.data.filter
+						  };
+					  }
+					  ,done: function(res, curr, count){
+							//如果是异步请求数据方式，res即为你接口返回的信息。
+							//如果是直接赋值的方式，res即为：{data: [], count: 99} data为当前页数据、count为数据总长度
+							console.log(res);
+
+							//得到当前页码
+							console.log(curr);
+
+							//得到数据总量
+							console.log(count);
+						}
+					  ,request: {
+					     pageName: 'pageNumber' //页码的参数名称，默认：page
+						 ,limitName: 'limit' ,//每页数据量的参数名，默认：limit	
+					   }
+				      ,page: true //开启分页
+				      ,cols: [[ //表头
+				        {field: 'id', title: 'ID', width:'9%', sort: true, templet: '#titleTpl'}
+				        ,{field: 'name', title: '用户名', width: '14%'}
+				        ,{field: 'sex', title: '性别', width:'9%', sort: true, templet:function(d){
+							return d.sex ? '女':'男'
+						}}
+				        ,{field: 'qqName', title: 'qq昵称', width:'13%'}
+				        ,{field: 'level', title: '等级', width: '9%', sort: true}
+				        ,{field: 'vip', title: 'vip等级', width: '10%', sort: true}
+				        ,{field: 'vipName', title: 'vip名字', width: '14%'}
+				        ,{field: 'isAdmin', title: '管理员', width: '10%', sort: true, templet:function(d){
+									return d.isAdmin ? '是':'否'
+				        }}
+						,{field: 'timeCreate', title: '创建时间', width: '13%', sort: true, templet:function(d){
+							return layui.util.toDateString(d.timeCreate, 'yyyy-MM-dd');
+						} }
+				      ]]
+				    });
+
+					<!--重载表格-->
+					table.on('toolbar(test)', function(obj){
+						var checkStatus = table.checkStatus(obj.config.id);
+						switch(obj.event){
+							case 'delete':
+								$('.filter').val('');
+								my.search(tableIns);
+								break;
+							case 'search':
+								my.search(tableIns);
+								break;
+						};
+					});
+				  });
+				</script>
+
+			</di;v>
+			<script type="text/html" id='titleTpl' th:inline="none">
+				<a class="layui-table-link" href="/u/user/edit?id={{d.id}}">{{d.id}}</a>
+			</script>
+			<!--页码-->
+			<div class='bottombar'>
+				<div class='page-index-bar' style='margin:0px' ></div>
+			</div>
+		</div>
+		
+		
+		
+	</body>
+	
+	<script>
+        var my = {};
+
+        // 条件查询
+        my.search = function(tableIns){
+			var filter = $('.filter').val().trim();
+			tableIns.reload({
+				url: serviceUri
+				,where: {filter: filter} //设定异步数据接口的额外参数
+			});
+			$('.filter').val(filter);
+        }
+		
+	</script>
+</html>

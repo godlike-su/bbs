@@ -1,0 +1,239 @@
+
+
+body{
+	margin: 0px;
+	padding: 0px;
+}
+
+/* 表格样式 */
+table{
+	border-collapse: collapse; /* 边线收缩 */
+	table-layout: fixed ;  /* 自动布局还是固定宽度 */
+	word-break: break-all; /* 换行设定 */
+	word-wrap:break-word;  /* 换行折断设定 */
+}
+
+/* 逗号表示同时指定多个目标的样式 */
+table,td,th{
+	border: 1px solid #e1e1e1;
+	text-align: center;
+}
+
+a{
+	text-decoration: none;
+	color: #2965B1;
+	font-size:14px;
+}
+
+input,textarea, select{
+	padding: 4px;
+	border-radius:4px;
+	border: 1px solid #ccc;
+	outline: none;
+	tab-size:4;
+}
+
+button{
+	padding: 4px 8px;
+	outline: none;
+	background-color: #fcfcfc;
+	border-radius:4px;
+	border: 1px solid #ccc;
+}
+
+pre{
+    display: block;
+    padding: 9.5px;
+    margin: 0 0 10px;
+	font-size: 14px;
+	font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    line-height: 1.8;
+    color: #333;
+	white-space: pre-wrap;
+    word-break: break-all;
+    word-wrap: break-word;
+	overflow-wrap: break-word;
+    background-color: #f5f5f5;
+    border: 0px solid #ccc;
+    border-radius: 4px;
+	tab-size:3;
+}
+
+/* 需要换行的文本 */
+.wrap{
+	word-break: break-all;
+	word-wrap: break-word;
+}
+.pad{
+	padding:4px;
+}
+/* 隐藏 */
+.hidden{
+	display:none;
+}
+	
+/* 主容器 */
+.container{
+	width:1000px;
+	margin: 0px auto auto auto;
+	box-sizing: border-box;
+	background-color: #fff;
+}
+/* 一行 */
+.row{
+	margin-top:4px;
+	margin-bottom:4px;
+}
+
+.primary{
+	display: inline-block;
+	background-color: #4285F4;
+	color: #fcfcfc;
+    border-radius: 4px;
+	border-width:0px;
+	padding: 6px 12px;
+	font-size:90%;
+}
+
+.register{
+	border: 1px solid #ccc;
+	display: inline-block;
+	background-color: #ffff7f;
+	color: #ff0000;
+	border-radius: 4px;
+	border-width:0px;
+	padding: 6px 12px;
+	font-size:90%;
+	margin-left: 20px;
+}
+		
+
+/* 页码区 */
+.page-index-bar{
+	width:98%;
+	margin: 20px 0;
+	text-align: right;
+}
+.page-index-bar .page{
+	display: inline-block;
+	text-align: center;
+	background-color: #ea9518;
+	color: #fff;
+	margin: 0px 4px;
+	padding: 4px 8px;
+	border-radius: 10px;
+	font-size:75%;
+}
+.page-index-bar .static{
+	background-color: #888;
+}
+
+span{
+	display: inline-block ;
+}
+
+span.label{
+	color:#666;
+	font-size: 90%;
+	margin:4px 10px 4px 0px;
+}
+span.value{
+	color:#111;
+	font-size: 90%;	
+}
+span.caption{
+	display: inline-block;
+	color:#666;
+	font-size: 90%;
+	margin: 4px 10px 4px 0px;
+	border-left: 3px solid #4285f4;
+	padding-left: 5px;
+}
+
+/* 图片的相对居中显示 */
+img.hcenter{
+	position: absolute;
+	left: 50%;
+	top: 0;
+	transform:translateX(-50%);
+}
+img.vcenter{
+	position: absolute;
+	left: 0;
+	top: 50%;
+	transform:translateY(-50%);
+}
+img.center{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	transform:translateX(-50%) translateY(-50%);	
+}
+
+/* 内容区 */
+.main{
+	min-height: 200px;
+	background-color: #fff;
+}
+
+/* 当前位置 */
+.location{
+	margin: 0 0 20px 0;
+	padding: 10px;
+	background-color: #ddd;
+	color: #444;
+}
+
+/* 头部定义 */
+.header{
+	position: relative;
+	background-color: #fff;
+	height: 44px;
+	margin-bottom: 6px;
+}
+/* 头部左侧信息区 */
+.header .left{
+	position: absolute;
+	left: 10px;
+	top: 50%;
+	transform:translateY(-50%);
+}
+/* 头部右侧信息区 */
+.header .right {
+	position: absolute;
+	right: 10px;
+	top: 50%;
+	transform:translateY(-50%);
+}
+
+@media screen and ( max-width: 1400px ) {
+	.container{
+		width:1000px;
+		margin: 0px auto auto auto;
+	}
+}
+
+@media screen and ( max-width: 1080px ) {
+	.container{
+		width:auto;
+		margin: 0px 4px 4px 4px;
+	}
+	
+	
+	a{
+		font-size: 14px;
+	}
+	pre{
+		tab-size: 2;
+		font-size: 14px;
+	}
+	table,td,th{
+		padding: 5px;
+		font-size: 15px;
+	}
+	
+	.phone{
+		height: 200px;
+	}
+	
+}

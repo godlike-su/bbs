@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<title>我的论坛</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+
+		
+		<script th:src="@{/js/jquery.min.js}" ></script>
+		<script th:src="@{/js/afquery.js}" ></script>
+		<link rel="stylesheet" th:href="@{/css/common.css}" href="../../css/common.css"/>
+		<link rel="stylesheet" th:href="@{/css/user.css}" href="../../css/user.css" />
+		<link rel="stylesheet" th:href="@{/css/user_head.css}" href="../../css/user_head.css">
+		
+	</head>
+	<body>	
+	<div class='container'>
+		
+		<div class='main'>
+			<!--头部-->
+			<div th:replace="~{common::header}"></div>
+
+			<div class='form' >
+				<div class="head">
+					<svg viewBox="0 0 1000 300">
+						<symbol id="line-text">
+							<text text-anchor="middle" x="50%" y="50%" dy=".4em">
+								我的论坛|登录
+							</text>
+						</symbol>
+
+						<use xlink:href="#line-text" class="text"></use>
+						<use xlink:href="#line-text" class="text"></use>
+						<use xlink:href="#line-text" class="text"></use>
+						<use xlink:href="#line-text" class="text"></use>
+					</svg>
+				</div>
+				<br>
+				<br>
+
+				<input type="text" name="username" placeholder="userId" class="id input-item" 
+				oninput = "value=value.replace(/[^\d]/g,'')">
+				<input type="password" name="password" placeholder="password" class="password input-item">
+					
+				<input class='state input-item' type='text' placeholder="验证码" style="width: 60%;"
+						onkeydown='if(event.keyCode==13)my.login();'>
+				<img class='verifyImg' style='width:80px;height:30px;background-color: #f5f59e;' onclick="my.refState()" title="点击刷新验证码">
+			
+
+				<!-- <div class='row'>
+					<span class='label'> 账号 </span>
+					<input class='id' type='text'  oninput = "value=value.replace(/[^\d]/g,'')" 
+						onkeydown="idDet($('.id').val().trim())"
+					    onmouseenter="idDet($('.id').val().trim())"
+						onmouseleave="idDet($('.id').val().trim())"/>
+					<div class="idDet row"  style="display:none;">
+						<span class='label'></span>
+						<input value="账号不得为空"  style="color:red" readonly/>
+					</div>
+					<script>
+						var idDet = function(id)
+						{
+							if(id.length==0){
+								$('.idDet').show();
+							}
+							else if(id.length>0){
+								$('.idDet').hide();
+							}
+						}
+					</script>
+				</div >
+				
+				<div class='row'>
+					<span class='label'> 密码 </span>
+					<input class='password' type='password' onkeydown="passDet($('.password').val().trim())"
+					   onmouseenter="passDet($('.password').val().trim())"
+					   onmouseleave="passDet($('.password').val().trim())">
+					
+					<div class="passDet row"  style="display:none;">
+						<span class='label'></span>
+						<input value="密码不得为空或空格"  style="color:red" readonly/>
+					</div>
+					<script>
+						var passDet = function(password)
+						{
+							if(password.length==0){
+								$('.passDet').show();
+							}
+							else if(password.length>0){
+								$('.passDet').hide();
+							}
+						}
+					</script>
+				</div>
+
+				<div class='row'>
+					<span class='label'> 验证码 </span>
+					<input class='state' type='text' 
+						   onkeydown='if(event.keyCode==13)my.login();'>
+					<img class='verifyImg' style='width:80px;height:30px;background-color: #f5f59e;' onclick="my.refState()" title="点击刷新验证码">
+				</div > -->
+				
+				<!-- <div class='row'>
+					<span class='label'> &nbsp; </span>
+					<button onclick='my.login()' class='primary' style='margin-top:40px'> 登录 </button>
+					<a href="register.html" th:href='@{/register}'  class="register" style='margin-top:40px'> 注册 </a>
+				</div> -->
+
+				<div class="btn" onclick='my.login()'>Login</div>
+				<div class="msg" style="text-align: center">
+					<b>推荐使用：</b><a href="loginByQQ" ><img th:src="@{/img/Connect_logo_3.png}"></a>
+				</div>
+
+				<div class="msg">
+				Don`t have account? <a th:href='@{/register}' href="#">Sign up</a>
+				</div>
+				<!-- <div class="row" style="text-align: center">
+					<b>推荐使用：</b><a href="loginByQQ" ><img th:src="@{/img/Connect_logo_3.png}"></a>
+				</div>  -->
+			</div>
+			
+		</div>
+		<!-- <div class="form">
+			<div class="login-wrapper">
+				<br><br>
+				<div class="form-wrapper">
+				<input type="text" name="username" placeholder="userId" class="id input-item" 
+				oninput = "value=value.replace(/[^\d]/g,'')">
+				<input type="password" name="password" placeholder="password" class="password input-item">
+					
+					<input class='state input-item' type='text' placeholder="验证码" style="width: 60%;"
+							onkeydown='if(event.keyCode==13)my.login();'>
+					<img class='verifyImg' style='width:80px;height:30px;background-color: #f5f59e;' onclick="my.refState()" title="点击刷新验证码">
+				
+				<div class="btn" onclick='my.login()'>Login</div>
+				</div>
+
+				<div class="msg" style="text-align: center">
+					<b>推荐使用：</b><a href="loginByQQ" ><img th:src="@{/img/Connect_logo_3.png}"></a>
+				</div>
+
+				<div class="msg">
+				Don`t have account? <a th:href='@{/register}' href="#">Sign up</a>
+				</div>
+			</div>
+			
+		</div> -->
+		<div th:insert="~{common::footer}"></div>
+	</div>
+
+	<script>
+		var my = {};
+		var returnUrl =	'[[${returnUrl}]]';
+		
+		my.login = function(){
+			var req = {};
+			// req.name = $('.name').val().trim();
+            req.id = $('.id').val().trim();
+			req.password = $('.password').val().trim();
+			req.state = $('.state').val().trim();
+			
+			if(req.id.length == 0){
+				alert('账号不得为空!') ; return;
+			}
+			req.id = Number($('.id').val());
+            if(req.password.length==0){
+                alert('密码不得为空!') ; return;
+            }
+            if(req.state.length==0){
+                alert('验证码不得为空!') ; return;
+            }
+            req.state = Number($('.state').val());
+            if(req.state.length==0 || isNaN(req.state)){
+                alert('请正确输入验证码!') ; return;
+            }
+			
+			Af.rest('[[@{/login.do}]]'  , req, function(data){
+				// alert('登录成功');
+				//登录跳转
+				if(returnUrl.length > 0)
+				    location.href = returnUrl;
+				else
+					location.href = '[[@{/}]]' ;  // 跳到首页
+			},function (error, reason) {
+			    alert(reason);
+				my.refState();
+            })
+		}
+
+        my.refState = function () {
+            Af.rest("[[@{/loginState.do}]]", "", function (data) {
+                $('.state').val("");
+                var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+                $('.verifyImg').attr('src', verifyImgUrl);
+            })
+        }
+        
+        Af.rest('[[@{/loginState.do}]]' , "", function(data){
+            var verifyImgUrl = '[[@{/show}]]?t=' + new Date().getTime();
+            $('.verifyImg').attr('src', verifyImgUrl);
+            $('.state').val("");
+        })
+	</script>
+	</body>
+</html>

@@ -1,0 +1,125 @@
+body{
+	background-color: #F6F7FB;
+}
+
+.list{
+	border: 1px solid #f1f1f1;
+}
+.list .topbar{
+	background-color: #fcfcfc;
+	border-bottom: 1px dotted #f1f1f1;
+	padding: 10px;
+}
+.list .bottombar{
+	border-top: 0px solid #f1f1f1;
+	padding: 10px;
+}
+.list .item{
+	border-bottom: 1px dotted #f1f1f1;
+	padding: 8px 4px;
+}
+/* 列表的4列显示, c1,c2,c3,c4 */
+.list .c1{
+	display: inline-block;
+	width: 60px;
+	vertical-align: top;
+	text-align: center;
+}
+.list .c2{
+	display: inline-block;
+	width: calc(100% - 300px);
+	vertical-align: top;
+}
+.list .c3{
+	display: inline-block;
+	width: 120px;
+	vertical-align: top;
+	text-align: center;
+	font-size: 13px;
+	overflow: hidden;
+	white-space: nowrap;
+}
+.list .c4{
+	display: inline-block;
+	width: 100px;
+	vertical-align: bottom;
+	text-align: center;
+	font-size: 13px;
+}
+/* 回复数 */
+.list .replycount {
+	display: inline-block;
+	border-radius:2px;
+	background-color: #fcfcfc;
+	border: 1px solid #f1f1f1;
+	font-size:12px;
+	color: #666;
+	width: 30px;
+	padding:3px 0;
+}
+
+/* 查询 */
+.search{
+	position: relative;
+	border: 1px solid #e1e1e1;
+	background-color: #fff;
+	padding: 2px;
+	width: 200px;
+	margin: 4px;
+}
+.search .filter{
+	border-width: 0;
+	width: 144px;
+}
+.search .okbtn{
+	position: absolute;
+	right: 4px;
+	top: 6px;
+}
+.search .clearbtn{
+	display: none;
+	position: absolute;
+	right: 30px;
+	top: 6px;
+	background-color: #fff;
+}
+.search:hover .clearbtn{
+	display: inline-block;
+}
+
+/* 响应式布局 */
+@media screen and ( max-width: 1400px ) {
+	
+}
+
+@media screen and ( max-width: 1080px ) {
+	/* 手机端列表的4列显示, c1,c2,c3,c4 */
+	.list .c1{
+		display: inline-block;
+		width: 20%;
+		vertical-align: top;
+		text-align: center;
+	}
+	.list .c2{
+		display: inline-block;
+		width: 70%;
+		vertical-align: top;
+	}
+	.list .c3{
+		display: inline-block;
+		width: 20%;
+		vertical-align: top;
+		text-align: center;
+		font-size: 13px;
+		overflow: hidden;
+		white-space: nowrap;
+	}
+	.list .c4{
+		display: inline-block;
+		width: calc(100% - 25%);
+		vertical-align: bottom;
+		text-align: right;
+		font-size: 13px;
+	}
+	
+}
